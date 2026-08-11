@@ -1,4 +1,5 @@
 import BrandStrip from "@/components/home/brand-strip";
+import BrowseDressStyleSection from "@/components/home/browse-dress-style-section";
 import HeroSection from "@/components/home/hero-section";
 import NewArrivalsSection from "@/components/home/new-arrivals-section";
 import TopSellingSection from "@/components/home/top-selling-section";
@@ -11,12 +12,10 @@ export default function HomePage() {
 
       <main>
         <HeroSection />
-
         <BrandStrip />
-
         <NewArrivalsSection />
-
         <TopSellingSection />
+        <BrowseDressStyleSection />
       </main>
     </>
   );
