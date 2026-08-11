@@ -287,23 +287,23 @@ export default function Header() {
           min-[800px]:h-[96px]
         "
       >
-    <div
+   <div
   className="
     mx-auto
     flex
     w-full
     items-center
-    gap-[15px]
     px-[16px]
 
-    min-[800px]:max-w-[1240px]
+    min-[800px]:px-[32px]
     min-[800px]:gap-[18px]
-    min-[800px]:px-[24px]
 
-    min-[1100px]:gap-[28px]
+    min-[1200px]:px-[56px]
+    min-[1200px]:gap-[28px]
 
+    min-[1440px]:max-w-[1440px]
+    min-[1440px]:px-[72px]
     min-[1440px]:gap-[40px]
-    min-[1440px]:px-0
   "
 >
           {/* =================================================
@@ -322,17 +322,30 @@ export default function Header() {
               setMobileMenuOpen((previous) => !previous);
               setMobileSearchOpen(false);
             }}
-            className="
-              flex
-              h-[24px]
-              w-[24px]
-              shrink-0
-              items-center
-              justify-center
-              text-black
+            // className="
+            //   flex
+            //   h-[24px]
+            //   w-[24px]
+            //   shrink-0
+            //   items-center
+            //   justify-center
+            //   text-black
 
-              min-[800px]:hidden
-            "
+            //   min-[800px]:hidden
+            // "
+            className="
+  mr-[20px]
+  flex
+  h-[24px]
+  w-[24px]
+  shrink-0
+  items-center
+  justify-center
+  text-black
+
+  min-[800px]:mr-0
+  min-[800px]:hidden
+"
           >
             {mobileMenuOpen ? <CloseIcon size={24} /> : <MenuIcon />}
           </button>
