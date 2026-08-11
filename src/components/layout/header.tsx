@@ -654,21 +654,19 @@ export default function Header() {
 
             {/* CART */}
 
-            <Link
-              href="/cart"
-              aria-label="Shopping cart"
-              className="
-                flex
-                h-[24px]
-                w-[24px]
-                items-center
-                justify-center
-                text-black
-              "
-            >
-              <CartIcon />
-            </Link>
-
+        <Link
+  href="/cart"
+  aria-label="Open cart"
+  className="
+    flex
+    items-center
+    justify-center
+    text-black
+    no-underline
+  "
+>
+  <CartIcon />
+</Link>
             {/* USER */}
 
             <Link
