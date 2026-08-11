@@ -40,7 +40,24 @@ const testimonials: Testimonial[] = [
     review:
       `"As someone who's always on the lookout for unique fashion pieces, I'm impressed by the collection, quality, and attention to detail that Shop.co consistently provides."`,
   },
+  {
+    id: 5,
+    name: "Emily R.",
+    review:
+      `"The shopping experience was smooth and the quality exceeded what I expected. I always find something that fits my style."`,
+  },
 ];
+
+
+const carouselTestimonials = [
+  testimonials[testimonials.length - 2],
+  testimonials[testimonials.length - 1],
+  ...testimonials,
+  testimonials[0],
+  testimonials[1],
+  testimonials[2],
+];
+
 
 /* =========================================================
    STAR
@@ -148,9 +165,7 @@ function RightArrowIcon() {
   );
 }
 
-/* =========================================================
-   CARD
-========================================================= */
+
 
 function TestimonialCard({
   testimonial,
@@ -159,32 +174,49 @@ function TestimonialCard({
 }) {
   return (
     <article
-      className="
-       h-auto
-  min-h-[186px]
-  w-[358px]
-  shrink-0
-  rounded-[20px]
-  border
-  border-black/10
-  bg-white
-  px-[24px]
-  py-[24px]
+    //   className="
+    //     box-border
+    //     w-[358px]
+    //     shrink-0
+    //     rounded-[20px]
+    //     border
+    //     border-black/10
+    //     bg-white
 
-  min-[800px]:min-h-[220px]
-  min-[800px]:w-[360px]
-  min-[800px]:px-[28px]
-  min-[800px]:py-[28px]
+    //     px-[24px]
+    //     py-[24px]
 
-  min-[1200px]:h-[240px]
-  min-[1200px]:w-[400px]
-  min-[1200px]:px-[32px]
-  min-[1200px]:py-[28px]
+    //     min-[800px]:w-[360px]
+    //     min-[800px]:px-[28px]
+    //     min-[800px]:py-[28px]
+
+    //     min-[1200px]:w-[400px]
+    //     min-[1200px]:px-[32px]
+    //     min-[1200px]:py-[28px]
+    //   "
+    className="
+    box-border
+    h-full
+    w-full
+    shrink-0
+    rounded-[20px]
+    border
+    border-black/10
+    bg-white
+
+    px-[24px]
+    py-[24px]
+
+    min-[800px]:px-[28px]
+    min-[800px]:py-[28px]
+
+    min-[1200px]:w-[400px]
+    min-[1200px]:px-[32px]
+    min-[1200px]:py-[28px]
   "
     >
       {/* STARS */}
-
-      <div className="flex items-center gap-[4px]">
+      <div className="flex h-[23px] items-center gap-[4px]">
         <StarIcon />
         <StarIcon />
         <StarIcon />
@@ -192,8 +224,7 @@ function TestimonialCard({
         <StarIcon />
       </div>
 
-      {/* NAME */}
-
+      {/* NAME + VERIFIED */}
       <div
         className="
           mt-[12px]
@@ -210,11 +241,6 @@ function TestimonialCard({
             text-[20px]
             leading-[22px]
             text-black
-
-            min-[800px]:text-[22px]
-            min-[800px]:leading-[22px]
-
-            min-[1200px]:text-[20px]
           "
           style={{
             fontFamily: "var(--font-satoshi)",
@@ -228,19 +254,15 @@ function TestimonialCard({
       </div>
 
       {/* REVIEW */}
-
       <p
         className="
           m-0
           mt-[8px]
+          w-full
 
           text-[16px]
           leading-[22px]
           text-black/60
-
-          min-[800px]:mt-[12px]
-          min-[800px]:text-[16px]
-          min-[800px]:leading-[22px]
         "
         style={{
           fontFamily: "var(--font-satoshi)",
@@ -253,27 +275,23 @@ function TestimonialCard({
   );
 }
 
-/* =========================================================
+/* 
+=========================================================
    SECTION
 ========================================================= */
 export default function TestimonialsSection() {
   const sliderRef = useRef<HTMLDivElement>(null);
 
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(2);
   
+
 function moveLeft() {
-  if (!sliderRef.current) return;
-
   if (window.innerWidth >= 1200) {
-    setCurrentSlide(0);
-
-    sliderRef.current.scrollTo({
-      left: 0,
-      behavior: "smooth",
-    });
-
+    setCurrentSlide((prev) => Math.max(prev - 1, 1));
     return;
   }
+
+  if (!sliderRef.current) return;
 
   const amount = window.innerWidth < 800 ? 374 : 380;
 
@@ -284,18 +302,14 @@ function moveLeft() {
 }
 
 function moveRight() {
-  if (!sliderRef.current) return;
-
   if (window.innerWidth >= 1200) {
-    setCurrentSlide(1);
-
-    sliderRef.current.scrollTo({
-      left: 420,
-      behavior: "smooth",
-    });
-
+    setCurrentSlide((prev) =>
+      Math.min(prev + 1, carouselTestimonials.length - 4)
+    );
     return;
   }
+
+  if (!sliderRef.current) return;
 
   const amount = window.innerWidth < 800 ? 374 : 380;
 
@@ -428,10 +442,9 @@ function moveRight() {
   </div>
 </div>
     
-
-      {/* ===================================================
-          CAROUSEL
-      ==================================================== */}
+{/* ===================================================
+    CAROUSEL
+==================================================== */}
 
 <div
   className="
@@ -444,113 +457,126 @@ function moveRight() {
     min-[1200px]:mt-[40px]
   "
 >
-  <div
-    ref={sliderRef}
-    className="
-      flex
-      w-full
-      snap-x
-      snap-mandatory
-      gap-[16px]
-      overflow-x-auto
-      scroll-smooth
-      px-[16px]
+  {/* =================================================
+      MOBILE + TABLET
+  ================================================== */}
+{/* =================================================
+    MOBILE + TABLET
+================================================== */}
 
-      [scrollbar-width:none]
-      [&::-webkit-scrollbar]:hidden
+<div
+  ref={sliderRef}
+  className="
+    flex
+    w-full
+    snap-x
+    snap-mandatory
+    overflow-x-auto
+    scroll-smooth
 
-      min-[800px]:gap-[20px]
-      min-[800px]:px-[32px]
+    [scrollbar-width:none]
+    [&::-webkit-scrollbar]:hidden
 
-      min-[1200px]:mx-auto
-      min-[1200px]:w-[calc(100%-160px)]
-      min-[1200px]:max-w-[1640px]
-      min-[1200px]:px-0
-    "
-  >
-    {/* {testimonials.map((testimonial, index) => (
+    min-[1200px]:hidden
+  "
+>
+  {testimonials.map((testimonial) => (
+    <div
+      key={testimonial.id}
+      className="
+        w-full
+        shrink-0
+        snap-start
+
+        px-[16px]
+
+        min-[800px]:px-[32px]
+      "
+    >
       <div
-        key={testimonial.id}
-        className={`
-          shrink-0
-          snap-start
-          transition-all
-          duration-300
+        className="
+          mx-auto
+          w-full
+          max-w-[358px]
 
-          ${
-            index === 3
-              ? "min-[1200px]:opacity-40 min-[1200px]:blur-[2px]"
-              : ""
-          }
-        `}
+          min-[800px]:max-w-[700px]
+        "
       >
         <TestimonialCard testimonial={testimonial} />
       </div>
-    ))} */}
-  {testimonials.map((testimonial, index) => {
-  const shouldBlur =
-    (currentSlide === 0 && index === 3) ||
-    (currentSlide === 1 && index === 0);
-
-  return (
-    <div
-      key={testimonial.id}
-      className={`
-        shrink-0
-        snap-start
-        transition-all
-        duration-300
-        ease-out
-
-        ${
-          shouldBlur
-            ? "min-[1200px]:opacity-40 min-[1200px]:blur-[3px]"
-            : "opacity-100 blur-none"
-        }
-      `}
-    >
-      <TestimonialCard testimonial={testimonial} />
     </div>
-  );
-})}
-  </div>
-
-  {/* LEFT FADE */}
-  <div
-    className="
-      pointer-events-none
-      absolute
-      left-0
-      top-0
-      hidden
-      h-full
-      w-[70px]
-      bg-gradient-to-r
-      from-white
-      to-transparent
-
-      min-[1200px]:block
-    "
-  />
-
-  {/* RIGHT FADE */}
-  <div
-    className="
-      pointer-events-none
-      absolute
-      right-0
-      top-0
-      hidden
-      h-full
-      w-[110px]
-      bg-gradient-to-l
-      from-white
-      to-transparent
-
-      min-[1200px]:block
-    "
-  />
+  ))}
 </div>
+  {/* =================================================
+      DESKTOP
+
+      visible:
+      blur | clear | clear | clear | blur
+  ================================================== */}
+
+  <div
+    className="
+      relative
+      hidden
+      w-full
+      overflow-hidden
+
+      min-[1200px]:block
+    "
+  >
+    <div
+      className="
+        flex
+        items-stretch
+        gap-[20px]
+
+        transition-transform
+        duration-500
+        ease-in-out
+      "
+      style={{
+        marginLeft: "calc((100vw - 1240px) / 2)",
+        transform: `translateX(-${currentSlide * 420}px)`,
+      }}
+    >
+      {carouselTestimonials.map((testimonial, index) => {
+        const isLeftBlur = index === currentSlide - 1;
+        const isRightBlur = index === currentSlide + 3;
+
+        const isClear =
+          index >= currentSlide &&
+          index <= currentSlide + 2;
+
+        return (
+          <div
+            key={`${testimonial.id}-${index}`}
+            className={`
+              shrink-0
+              transition-all
+              duration-500
+              ease-in-out
+
+              ${
+                isLeftBlur || isRightBlur
+                  ? "opacity-35 blur-[3px]"
+                  : ""
+              }
+
+              ${
+                isClear
+                  ? "opacity-100 blur-0"
+                  : ""
+              }
+            `}
+          >
+            <TestimonialCard testimonial={testimonial} />
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</div>
+ 
     </section>
   );
 }
