@@ -40,6 +40,13 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import SiteFooter from "@/components/layout/site-footer";
+import { Archivo_Black } from "next/font/google";
+
+const archivoBlack = Archivo_Black({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-archivo-black",
+});
 const satoshi = localFont({
   src: [
     {
@@ -70,8 +77,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-     <body className={satoshi.variable}>
-        {children}
+     {/* <body className={satoshi.variable}> */}
+     <body className={`${satoshi.variable} ${archivoBlack.variable}`}>
+         {children}
         <div className="relative">
   <NewsletterSection />
 
