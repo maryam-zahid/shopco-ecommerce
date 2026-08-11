@@ -38,3 +38,41 @@ export const newArrivals: Product[] = [
     rating: 4.5,
   },
 ];
+
+
+export const topSelling: Product[] = [
+  {
+    id: "5",
+    slug: "vertical-striped-shirt",
+    name: "Vertical Striped Shirt",
+    image: "/images/products/vertical-striped-shirt.png",
+    price: 212,
+    originalPrice: 232,
+    discount: 20,
+    rating: 5.0,
+  },
+  {
+    id: "6",
+    slug: "courage-graphic-t-shirt",
+    name: "Courage Graphic T-shirt",
+    image: "/images/products/courage-graphic-t-shirt.png",
+    price: 145,
+    rating: 4.0,
+  },
+  {
+    id: "7",
+    slug: "loose-fit-bermuda-shorts",
+    name: "Loose Fit Bermuda Shorts",
+    image: "/images/products/loose-fit-bermuda-shorts.png",
+    price: 80,
+    rating: 3.0,
+  },
+  {
+    id: "8",
+    slug: "faded-skinny-jeans",
+    name: "Faded Skinny Jeans",
+    image: "/images/products/faded-skinny-jeans.png",
+    price: 210,
+    rating: 4.5,
+  },
+];
