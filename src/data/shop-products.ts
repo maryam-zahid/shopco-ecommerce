@@ -1,3 +1,4 @@
+
 export type ShopProduct = {
   id: number;
   slug: string;
@@ -214,6 +215,170 @@ export const shopProducts: ShopProduct[] = [
       {
         name: "Black",
         value: "#111111",
+      },
+    ],
+
+    sizes: ["Small", "Medium", "Large", "X-Large"],
+
+    selectedSize: "Large",
+
+    breadcrumb: ["Home", "Shop", "Men", "T-shirts"],
+  },
+
+  {
+    id: 6,
+    slug: "polo-with-contrast-trims",
+    name: "POLO WITH CONTRAST TRIMS",
+
+    price: 212,
+    oldPrice: 242,
+    discount: 20,
+
+    rating: 4.0,
+
+    description:
+      "A stylish polo shirt featuring contrast trims for a clean and modern look with a comfortable everyday fit.",
+
+    images: [
+      "/images/products/recommended/polo-contrast.png",
+      "/images/products/recommended/polo-contrast.png",
+      "/images/products/recommended/polo-contrast.png",
+    ],
+
+    colors: [
+      {
+        name: "Blue",
+        value: "#0F5B78",
+      },
+      {
+        name: "White",
+        value: "#F5F5F5",
+      },
+      {
+        name: "Navy",
+        value: "#31344F",
+      },
+    ],
+
+    sizes: ["Small", "Medium", "Large", "X-Large"],
+
+    selectedSize: "Large",
+
+    breadcrumb: ["Home", "Shop", "Men", "Polo"],
+  },
+
+  {
+    id: 7,
+    slug: "gradient-graphic-t-shirt",
+    name: "GRADIENT GRAPHIC T-SHIRT",
+
+    price: 145,
+
+    rating: 3.5,
+
+    description:
+      "A bold graphic t-shirt featuring a colorful gradient print with a relaxed and comfortable everyday fit.",
+
+    images: [
+      "/images/products/recommended/gradient-graphic.png",
+      "/images/products/recommended/gradient-graphic.png",
+      "/images/products/recommended/gradient-graphic.png",
+    ],
+
+    colors: [
+      {
+        name: "White",
+        value: "#F5F5F5",
+      },
+      {
+        name: "Pink",
+        value: "#E77B9D",
+      },
+      {
+        name: "Blue",
+        value: "#5FA6D8",
+      },
+    ],
+
+    sizes: ["Small", "Medium", "Large", "X-Large"],
+
+    selectedSize: "Large",
+
+    breadcrumb: ["Home", "Shop", "Men", "T-shirts"],
+  },
+
+  {
+    id: 8,
+    slug: "polo-with-tipping-details",
+    name: "POLO WITH TIPPING DETAILS",
+
+    price: 180,
+
+    rating: 4.5,
+
+    description:
+      "A classic polo shirt with refined tipping details designed for a polished and comfortable casual style.",
+
+    images: [
+      "/images/products/recommended/polo-tipping.png",
+      "/images/products/recommended/polo-tipping.png",
+      "/images/products/recommended/polo-tipping.png",
+    ],
+
+    colors: [
+      {
+        name: "Rose",
+        value: "#A85B64",
+      },
+      {
+        name: "Navy",
+        value: "#31344F",
+      },
+      {
+        name: "Black",
+        value: "#111111",
+      },
+    ],
+
+    sizes: ["Small", "Medium", "Large", "X-Large"],
+
+    selectedSize: "Large",
+
+    breadcrumb: ["Home", "Shop", "Men", "Polo"],
+  },
+
+  {
+    id: 9,
+    slug: "black-striped-t-shirt",
+    name: "BLACK STRIPED T-SHIRT",
+
+    price: 120,
+    oldPrice: 150,
+    discount: 30,
+
+    rating: 5.0,
+
+    description:
+      "A versatile striped t-shirt with contrasting black sleeves and a comfortable fit for everyday wear.",
+
+    images: [
+      "/images/products/recommended/black-striped.png",
+      "/images/products/recommended/black-striped.png",
+      "/images/products/recommended/black-striped.png",
+    ],
+
+    colors: [
+      {
+        name: "Black",
+        value: "#111111",
+      },
+      {
+        name: "White",
+        value: "#F5F5F5",
+      },
+      {
+        name: "Gray",
+        value: "#808080",
       },
     ],
 
