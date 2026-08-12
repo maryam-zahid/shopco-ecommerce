@@ -69,3 +69,32 @@ svg {
 img {
   max-width: 100%;
 }
+
+.hero-shop-now {
+  width: 210px;
+  height: 52px;
+  background: #000000 !important;
+  border-radius: 62px !important;
+  color: #ffffff !important;
+  text-decoration: none !important;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-shop-now,
+.hero-shop-now:link,
+.hero-shop-now:visited,
+.hero-shop-now:hover,
+.hero-shop-now:active,
+.hero-shop-now span {
+  color: #ffffff !important;
+}
+
+.hero-shop-now span {
+  font-family: var(--font-satoshi);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 22px;
+}

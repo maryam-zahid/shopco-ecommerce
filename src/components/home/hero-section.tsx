@@ -1,227 +1,100 @@
 import Image from "next/image";
 import Link from "next/link";
-
-function Star({ className = "" }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 100 100"
-      aria-hidden="true"
-      className={className}
-    >
-      <path
-        d="
-          M50 0
-          C53 31 69 47 100 50
-          C69 53 53 69 50 100
-          C47 69 31 53 0 50
-          C31 47 47 31 50 0
-          Z
-        "
-        fill="currentColor"
-      />
-    </svg>
-  );
-}
-
+import BrandStrip from "@/components/home/brand-strip";
 export default function HeroSection() {
   return (
+     <>
     <section
       className="
         relative
-        h-[853px]
         w-full
         overflow-hidden
         bg-[#F2F0F1]
 
-        min-[800px]:h-[720px]
         min-[1200px]:h-[663px]
-        min-[1920px]:h-[663px]
       "
     >
-      <div className="relative mx-auto h-full w-full max-w-[1440px]">
-        {/* ===================================================
-            MOBILE IMAGE
-            0px - 799px
-        ==================================================== */}
+      {/* =========================
+          DESKTOP BACKGROUND IMAGE
+         ========================= */}
+      <div
+        className="
+          absolute
+          inset-0
+          hidden
 
-      {/* ===================================================
-    MOBILE IMAGE
-    0px - 799px
-=================================================== */}
+          min-[1200px]:block
+        "
+      >
+        <Image
+          src="/images/home/hero-desktop.png"
+          alt="Fashionable couple wearing modern clothing"
+          fill
+          priority
+          sizes="100vw"
+          className="
+            object-cover
+            object-center
+          "
+        />
+      </div>
 
-<div
-  className="
-    absolute
-    bottom-0
-    left-1/2
-    z-[1]
-    h-[448px]
-    w-[390px]
-    -translate-x-1/2
-    overflow-hidden
+      {/* =========================
+          DESKTOP CONTENT
+         ========================= */}
+      <div
+        className="
+          relative
+          z-10
+          mx-auto
+          hidden
+          h-full
+          w-full
+          max-w-[1440px]
 
-    min-[800px]:hidden
-  "
->
-  <Image
-    src="/images/home/image.png"
-    alt=""
-    width={390}
-    height={448}
-    priority
-    sizes="390px"
-    className="
-      block
-      h-[448px]
-      w-[390px]
-      max-w-none
-    "
-  />
-</div>
-
-{/* ===================================================
-    TABLET IMAGE
-    800px - 1919px
-=================================================== */}
-
-<div
-  className="
-    absolute
-    right-0
-    bottom-0
-    z-[1]
-    hidden
-
-    min-[800px]:block
-    min-[800px]:h-[520px]
-    min-[800px]:w-[52%]
-
-    min-[1200px]:h-[600px]
-    min-[1200px]:w-[50%]
-
-    min-[1920px]:hidden
-  "
->
-  <Image
-    src="/images/home/image.png"
-    alt=""
-    fill
-    priority
-    sizes="50vw"
-    className="
-      object-contain
-      object-right-bottom
-    "
-  />
-</div>
-
-{/* ===================================================
-    DESKTOP IMAGE
-    1920px+
-=================================================== */}
-
-<div
-  className="
-    absolute
-    inset-0
-    z-0
-    hidden
-
-    min-[1920px]:block
-  "
->
-  <Image
-    src="/images/home/hero-desktop.png"
-    alt=""
-    fill
-    priority
-    sizes="1440px"
-    className="
-      object-cover
-    "
-  />
-</div>
-
-        {/* ===================================================
-            HEADING
-        ==================================================== */}
-
+          min-[1200px]:block
+        "
+      >
+        {/* HEADING */}
         <h1
           className="
             absolute
-            top-[40px]
-            left-[16px]
-            z-20
+            left-[100px]
+            top-[96px]
+
             m-0
-            w-[315px]
+            w-[577px]
 
-            text-[36px]
-            leading-[34px]
-            tracking-[-1px]
+            text-[64px]
+            leading-[64px]
+            tracking-[-0.02em]
             text-black
-
-            min-[800px]:top-[70px]
-            min-[800px]:left-[40px]
-            min-[800px]:w-[470px]
-            min-[800px]:text-[48px]
-            min-[800px]:leading-[48px]
-
-            min-[1200px]:top-[85px]
-            min-[1200px]:left-[70px]
-            min-[1200px]:w-[540px]
-            min-[1200px]:text-[56px]
-            min-[1200px]:leading-[56px]
-
-            min-[1920px]:top-[103px]
-            min-[1920px]:left-[100px]
-            min-[1920px]:h-[173px]
-            min-[1920px]:w-[577px]
-            min-[1920px]:text-[64px]
-            min-[1920px]:leading-[64px]
-            min-[1920px]:tracking-[0]
           "
           style={{
-            fontFamily: '"Arial Black", Arial, sans-serif',
-            fontWeight: 900,
+            fontFamily: "var(--font-archivo-black)",
+            fontWeight: 400,
           }}
         >
-          FIND CLOTHES THAT MATCHES YOUR STYLE
+          FIND CLOTHES
+          <br />
+          THAT MATCHES
+          <br />
+          YOUR STYLE
         </h1>
 
-        {/* ===================================================
-            DESCRIPTION
-        ==================================================== */}
-
+        {/* DESCRIPTION */}
         <p
           className="
             absolute
-            top-[153px]
-            left-[16px]
-            z-20
+            left-[100px]
+            top-[304px]
+
             m-0
-            w-[358px]
+            w-[545px]
 
-            text-[14px]
-            leading-[20px]
-            tracking-[0]
+            text-[16px]
+            leading-[22px]
             text-black/60
-
-            min-[800px]:top-[235px]
-            min-[800px]:left-[40px]
-            min-[800px]:w-[450px]
-            min-[800px]:text-[15px]
-            min-[800px]:leading-[21px]
-
-            min-[1200px]:top-[280px]
-            min-[1200px]:left-[70px]
-            min-[1200px]:w-[500px]
-
-            min-[1920px]:top-[308px]
-            min-[1920px]:left-[100px]
-            min-[1920px]:h-[33px]
-            min-[1920px]:w-[545px]
-            min-[1920px]:text-[16px]
-            min-[1920px]:leading-[22px]
           "
           style={{
             fontFamily: "var(--font-satoshi)",
@@ -233,369 +106,647 @@ export default function HeroSection() {
           style.
         </p>
 
-        {/* ===================================================
-            SHOP NOW BUTTON
-        ==================================================== */}
+       {/* <Link
+  href="/category/casual"
+  className="
+    absolute
+    left-[100px]
+    top-[373px]
 
-        <Link
-          href="/category"
-          className="
-            absolute
-            top-[227px]
-            left-[16px]
-            z-30
+    !flex
+    !h-[52px]
+    !w-[210px]
+    shrink-0
 
-            flex
-            h-[52px]
-            w-[358px]
-            items-center
-            justify-center
+    !items-center
+    !justify-center
 
-            rounded-[62px]
-            bg-[#000000]
+    !rounded-[62px]
+    !border-0
+    !bg-black
 
-            min-[800px]:top-[310px]
-            min-[800px]:left-[40px]
-            min-[800px]:w-[210px]
+    !p-0
+    no-underline
 
-            min-[1200px]:top-[350px]
-            min-[1200px]:left-[70px]
+    text-[16px]
+    leading-[22px]
+    !text-white
+  "
+  style={{
+    fontFamily: "var(--font-satoshi)",
+    fontWeight: 500,
+    color: "#FFFFFF",
+    backgroundColor: "#000000",
+    borderRadius: "62px",
+  }}
+>
+  <span
+    className="
+      block
+      whitespace-nowrap
+      !text-white
+    "
+    style={{
+      fontFamily: "var(--font-satoshi)",
+      fontWeight: 500,
+      fontSize: "16px",
+      lineHeight: "22px",
+      color: "#FFFFFF",
+    }}
+  >
+    Shop Now
+  </span>
+</Link> */}
 
-            min-[1920px]:top-[373px]
-            min-[1920px]:left-[100px]
-          "
-        >
-          <span
-            className="
-              flex
-              h-[22px]
-              w-[75px]
-              items-center
-              justify-center
-              whitespace-nowrap
-              text-[16px]
-              leading-[22px]
-              text-[#FFFFFF]
-            "
-            style={{
-              fontFamily: "var(--font-satoshi)",
-              fontWeight: 500,
-            }}
-          >
-            Shop Now
-          </span>
-        </Link>
+<Link
+  href="/category/casual"
+  className="
+    hero-shop-now
+    absolute
+    left-[100px]
+    top-[373px]
+    z-20
 
-        {/* ===================================================
-            MOBILE STATS
-        ==================================================== */}
+    flex
+    h-[52px]
+    w-[210px]
+    items-center
+    justify-center
 
+    rounded-[62px]
+    bg-black
+    p-0
+    no-underline
+  "
+>
+  <span>Shop Now</span>
+</Link>
+        {/* =========================
+            STATS
+           ========================= */}
         <div
           className="
             absolute
-            top-[299px]
-            left-1/2
-            z-20
-            flex
-            w-[278px]
-            -translate-x-1/2
-            flex-wrap
-            justify-center
+            left-[100px]
+            top-[471px]
 
-            min-[800px]:hidden
+            flex
+            h-[74px]
+            items-center
+            gap-[32px]
           "
         >
-          <div className="flex w-full items-start justify-between">
-            <div className="flex w-[106px] flex-col items-start">
-              <span
-                className="text-[24px] leading-[32px] text-black"
-                style={{
-                  fontFamily: "var(--font-satoshi)",
-                  fontWeight: 700,
-                }}
-              >
-                200+
-              </span>
+          <Stat
+            number="200+"
+            label="International Brands"
+            width="141px"
+          />
 
-              <span
-                className="whitespace-nowrap text-[12px] leading-[22px] text-black/60"
-                style={{
-                  fontFamily: "var(--font-satoshi)",
-                  fontWeight: 400,
-                }}
-              >
-                International Brands
-              </span>
-            </div>
+          <div className="h-[74px] w-px bg-black/10" />
 
-            <div className="h-[52px] w-px bg-black/10" />
+          <Stat
+            number="2,000+"
+            label="High-Quality Products"
+            width="156px"
+          />
 
-            <div className="flex w-[117px] flex-col items-start">
-              <span
-                className="text-[24px] leading-[32px] text-black"
-                style={{
-                  fontFamily: "var(--font-satoshi)",
-                  fontWeight: 700,
-                }}
-              >
-                2,000+
-              </span>
+          <div className="h-[74px] w-px bg-black/10" />
 
-              <span
-                className="whitespace-nowrap text-[12px] leading-[22px] text-black/60"
-                style={{
-                  fontFamily: "var(--font-satoshi)",
-                  fontWeight: 400,
-                }}
-              >
-                High-Quality Products
-              </span>
-            </div>
-          </div>
-
-          <div className="mt-[4px] flex w-[103px] flex-col items-start">
-            <span
-              className="whitespace-nowrap text-[24px] leading-[32px] text-black"
-              style={{
-                fontFamily: "var(--font-satoshi)",
-                fontWeight: 700,
-              }}
-            >
-              30,000+
-            </span>
-
-            <span
-              className="whitespace-nowrap text-[12px] leading-[22px] text-black/60"
-              style={{
-                fontFamily: "var(--font-satoshi)",
-                fontWeight: 400,
-              }}
-            >
-              Happy Customers
-            </span>
-          </div>
+          <Stat
+            number="30,000+"
+            label="Happy Customers"
+            width="171px"
+          />
         </div>
 
-        {/* ===================================================
-            TABLET + DESKTOP STATS
-        ==================================================== */}
+        {/* =========================
+            DECORATIVE STARS
+           ========================= */}
 
+        {/* SMALL STAR */}
         <div
           className="
             absolute
-            z-20
-            hidden
-            items-center
+            left-[750px]
+            top-[297px]
 
-            min-[800px]:top-[400px]
-            min-[800px]:left-[40px]
-            min-[800px]:flex
-            min-[800px]:gap-[18px]
-
-            min-[1200px]:top-[440px]
-            min-[1200px]:left-[70px]
-            min-[1200px]:gap-[24px]
-
-            min-[1920px]:top-[473px]
-            min-[1920px]:left-[100px]
-            min-[1920px]:h-[74px]
-            min-[1920px]:w-[596px]
-            min-[1920px]:gap-[32px]
+            h-[56px]
+            w-[56px]
           "
+          aria-hidden="true"
         >
-          <div className="flex flex-col">
-            <span
-              className="
-                text-[30px]
-                leading-[42px]
-                text-black
-
-                min-[1200px]:text-[34px]
-                min-[1200px]:leading-[46px]
-
-                min-[1920px]:text-[40px]
-                min-[1920px]:leading-[54px]
-              "
-              style={{
-                fontFamily: "var(--font-satoshi)",
-                fontWeight: 700,
-              }}
-            >
-              200+
-            </span>
-
-            <span
-              className="
-                whitespace-nowrap
-                text-[13px]
-                leading-[20px]
-                text-black/60
-
-                min-[1200px]:text-[14px]
-
-                min-[1920px]:text-[16px]
-                min-[1920px]:leading-[22px]
-              "
-              style={{
-                fontFamily: "var(--font-satoshi)",
-                fontWeight: 400,
-              }}
-            >
-              International Brands
-            </span>
-          </div>
-
-          <div className="h-[60px] w-px shrink-0 bg-black/10 min-[1920px]:h-[74px]" />
-
-          <div className="flex flex-col">
-            <span
-              className="
-                text-[30px]
-                leading-[42px]
-                text-black
-
-                min-[1200px]:text-[34px]
-                min-[1200px]:leading-[46px]
-
-                min-[1920px]:text-[40px]
-                min-[1920px]:leading-[54px]
-              "
-              style={{
-                fontFamily: "var(--font-satoshi)",
-                fontWeight: 700,
-              }}
-            >
-              2,000+
-            </span>
-
-            <span
-              className="
-                whitespace-nowrap
-                text-[13px]
-                leading-[20px]
-                text-black/60
-
-                min-[1200px]:text-[14px]
-
-                min-[1920px]:text-[16px]
-                min-[1920px]:leading-[22px]
-              "
-              style={{
-                fontFamily: "var(--font-satoshi)",
-                fontWeight: 400,
-              }}
-            >
-              High-Quality Products
-            </span>
-          </div>
-
-          <div className="h-[60px] w-px shrink-0 bg-black/10 min-[1920px]:h-[74px]" />
-
-          <div className="flex flex-col">
-            <span
-              className="
-                whitespace-nowrap
-                text-[30px]
-                leading-[42px]
-                text-black
-
-                min-[1200px]:text-[34px]
-                min-[1200px]:leading-[46px]
-
-                min-[1920px]:text-[40px]
-                min-[1920px]:leading-[54px]
-              "
-              style={{
-                fontFamily: "var(--font-satoshi)",
-                fontWeight: 700,
-              }}
-            >
-              30,000+
-            </span>
-
-            <span
-              className="
-                whitespace-nowrap
-                text-[13px]
-                leading-[20px]
-                text-black/60
-
-                min-[1200px]:text-[14px]
-
-                min-[1920px]:text-[16px]
-                min-[1920px]:leading-[22px]
-              "
-              style={{
-                fontFamily: "var(--font-satoshi)",
-                fontWeight: 400,
-              }}
-            >
-              Happy Customers
-            </span>
-          </div>
+          <StarIcon />
         </div>
 
-        {/* ===================================================
-            SMALL STAR
-        ==================================================== */}
-
-        <Star
+        {/* LARGE STAR */}
+        <div
           className="
             absolute
-            top-[536px]
-            left-[27px]
-            z-20
-            h-[44px]
-            w-[44px]
-            text-black
+            right-[81px]
+            top-[57px]
 
-            min-[800px]:top-[360px]
-            min-[800px]:left-[52%]
-            min-[800px]:h-[46px]
-            min-[800px]:w-[46px]
-
-            min-[1200px]:top-[330px]
-            min-[1200px]:h-[50px]
-            min-[1200px]:w-[50px]
-
-            min-[1920px]:top-[297px]
-            min-[1920px]:left-[750px]
-            min-[1920px]:h-[56px]
-            min-[1920px]:w-[56px]
+            h-[104px]
+            w-[104px]
           "
-        />
-
-        {/* ===================================================
-            LARGE STAR
-        ==================================================== */}
-
-        <Star
-          className="
-            absolute
-            top-[438px]
-            right-[20px]
-            z-20
-            h-[76px]
-            w-[76px]
-            text-black
-
-            min-[800px]:top-[120px]
-            min-[800px]:right-[40px]
-            min-[800px]:h-[80px]
-            min-[800px]:w-[80px]
-
-            min-[1200px]:top-[105px]
-            min-[1200px]:right-[55px]
-            min-[1200px]:h-[90px]
-            min-[1200px]:w-[90px]
-
-            min-[1920px]:top-[86px]
-            min-[1920px]:right-[81px]
-            min-[1920px]:h-[104px]
-            min-[1920px]:w-[104px]
-          "
-        />
+          aria-hidden="true"
+        >
+          <StarIcon />
+        </div>
       </div>
+
+     {/* =================================================
+    MOBILE — 0px to 799px
+    Figma hero: 390px × 853px
+================================================== */}
+
+<div
+  className="
+    relative
+    mx-auto
+    h-[853px]
+    w-full
+    max-w-[390px]
+
+    min-[800px]:hidden
+  "
+>
+  {/* =================================================
+      MOBILE HEADING
+      Figma:
+      left: 16px
+      top inside hero: 40px
+      315 × 93
+  ================================================== */}
+
+  <h1
+    className="
+      absolute
+      left-[16px]
+      top-[40px]
+
+      m-0
+      w-[315px]
+
+      text-[36px]
+      leading-[34px]
+      tracking-[0px]
+      text-black
+    "
+    style={{
+      fontFamily: "var(--font-archivo-black)",
+      fontWeight: 400,
+    }}
+  >
+    FIND CLOTHES
+    <br />
+    THAT MATCHES
+    <br />
+    YOUR STYLE
+  </h1>
+
+  {/* =================================================
+      MOBILE DESCRIPTION
+      Figma:
+      left: 16px
+      top inside hero: 153px
+      358 × 50
+  ================================================== */}
+
+  <p
+    className="
+      absolute
+      left-[16px]
+      top-[153px]
+
+      m-0
+      w-[358px]
+
+      text-[14px]
+      leading-[20px]
+      tracking-[0px]
+      text-black/60
+    "
+    style={{
+      fontFamily: "var(--font-satoshi)",
+      fontWeight: 400,
+    }}
+  >
+    Browse through our diverse range of meticulously crafted garments,
+    designed to bring out your individuality and cater to your sense of
+    style.
+  </p>
+
+  {/* =================================================
+      MOBILE SHOP NOW
+      Figma:
+      left: 16px
+      top inside hero: 227px
+      358 × 52
+  ================================================== */}
+
+  <Link
+    href="/category/casual"
+    className="
+      absolute
+      left-[16px]
+      top-[227px]
+      z-20
+
+      flex
+      h-[52px]
+      w-[358px]
+      items-center
+      justify-center
+
+      rounded-[62px]
+      bg-black
+      no-underline
+    "
+    style={{
+      backgroundColor: "#000000",
+      textDecoration: "none",
+    }}
+  >
+    <span
+      style={{
+        fontFamily: "var(--font-satoshi)",
+        fontWeight: 500,
+        fontSize: "16px",
+        lineHeight: "22px",
+        color: "#FFFFFF",
+      }}
+    >
+      Shop Now
+    </span>
+  </Link>
+
+  {/* =================================================
+      FIRST STATS ROW
+      Figma top inside hero: 299px
+  ================================================== */}
+
+  <div
+    className="
+      absolute
+      left-1/2
+      top-[299px]
+
+      flex
+      h-[52px]
+      w-[278px]
+      -translate-x-1/2
+      items-center
+      justify-between
+    "
+  >
+    {/* 200+ */}
+    <div
+      className="
+        flex
+        h-[48px]
+        w-[106px]
+        flex-col
+        items-start
+      "
+    >
+      <span
+        className="
+          h-[32px]
+          whitespace-nowrap
+
+          text-[24px]
+          leading-[32px]
+          text-black
+        "
+        style={{
+          fontFamily: "var(--font-satoshi)",
+          fontWeight: 700,
+        }}
+      >
+        200+
+      </span>
+
+      <span
+        className="
+          whitespace-nowrap
+          text-[12px]
+          leading-[22px]
+          text-black/60
+        "
+        style={{
+          fontFamily: "var(--font-satoshi)",
+          fontWeight: 400,
+        }}
+      >
+        International Brands
+      </span>
+    </div>
+
+    {/* VERTICAL DIVIDER */}
+    <div className="h-[52px] w-px shrink-0 bg-black/10" />
+
+    {/* 2,000+ */}
+    <div
+      className="
+        flex
+        h-[48px]
+        w-[117px]
+        flex-col
+        items-start
+      "
+    >
+      <span
+        className="
+          h-[32px]
+          whitespace-nowrap
+
+          text-[24px]
+          leading-[32px]
+          text-black
+        "
+        style={{
+          fontFamily: "var(--font-satoshi)",
+          fontWeight: 700,
+        }}
+      >
+        2,000+
+      </span>
+
+      <span
+        className="
+          whitespace-nowrap
+          text-[12px]
+          leading-[22px]
+          text-black/60
+        "
+        style={{
+          fontFamily: "var(--font-satoshi)",
+          fontWeight: 400,
+        }}
+      >
+        High-Quality Products
+      </span>
+    </div>
+  </div>
+
+  {/* =================================================
+      30,000+
+      Figma top inside hero: 363px
+  ================================================== */}
+
+  <div
+    className="
+      absolute
+      left-1/2
+      top-[363px]
+
+      flex
+      h-[48px]
+      w-[103px]
+      -translate-x-1/2
+      flex-col
+      items-start
+    "
+  >
+    <span
+      className="
+        h-[32px]
+        whitespace-nowrap
+
+        text-[24px]
+        leading-[32px]
+        text-black
+      "
+      style={{
+        fontFamily: "var(--font-satoshi)",
+        fontWeight: 700,
+      }}
+    >
+      30,000+
+    </span>
+
+    <span
+      className="
+        whitespace-nowrap
+        text-[12px]
+        leading-[22px]
+        text-black/60
+      "
+      style={{
+        fontFamily: "var(--font-satoshi)",
+        fontWeight: 400,
+      }}
+    >
+      Happy Customers
+    </span>
+  </div>
+
+  {/* =================================================
+      MOBILE HERO IMAGE
+      Figma:
+      top inside hero: 405px
+      width: 390px
+      height: 448px
+  ================================================== */}
+
+  <div
+    className="
+      absolute
+      left-0
+      top-[405px]
+
+      h-[448px]
+      w-[390px]
+      overflow-hidden
+
+      bg-[#F2F0F1]
+    "
+  >
+    <Image
+      src="/images/home/hero-mobile.png"
+      alt="Fashionable couple wearing modern clothing"
+      fill
+      priority
+      sizes="390px"
+      className="
+        object-cover
+        object-center
+      "
+    />
+
+    {/* SMALL STAR */}
+    <div
+      className="
+        absolute
+        left-[27px]
+        top-[177px]
+
+        h-[44px]
+        w-[44px]
+      "
+      aria-hidden="true"
+    >
+      <StarIcon />
+    </div>
+
+    {/* LARGE STAR */}
+    <div
+      className="
+        absolute
+        right-[21px]
+        top-[100px]
+
+        h-[76px]
+        w-[76px]
+      "
+      aria-hidden="true"
+    >
+      <StarIcon />
+    </div>
+  </div>
+</div>
     </section>
+      {/* =====================================================
+          BRAND STRIP
+          Existing separate reusable component
+      ====================================================== */}
+
+      <BrandStrip />
+      </>
+  );
+}
+
+function Stat({
+  number,
+  label,
+  width,
+}: {
+  number: string;
+  label: string;
+  width: string;
+}) {
+  return (
+    <div
+      className="
+        flex
+        h-[74px]
+        shrink-0
+        flex-col
+        items-start
+        justify-center
+      "
+      style={{ width }}
+    >
+      <span
+        className="
+          whitespace-nowrap
+          text-[40px]
+          leading-[54px]
+          text-black
+        "
+        style={{
+          fontFamily: "var(--font-satoshi)",
+          fontWeight: 700,
+        }}
+      >
+        {number}
+      </span>
+
+      <span
+        className="
+          -mt-[2px]
+          whitespace-nowrap
+
+          text-[16px]
+          leading-[22px]
+          text-black/60
+        "
+        style={{
+          fontFamily: "var(--font-satoshi)",
+          fontWeight: 400,
+        }}
+      >
+        {label}
+      </span>
+    </div>
+  );
+}
+
+function MobileStat({
+  number,
+  label,
+}: {
+  number: string;
+  label: string;
+}) {
+  return (
+    <div
+      className="
+        flex
+        min-w-[150px]
+        flex-col
+        items-center
+        px-[8px]
+
+        min-[800px]:items-start
+      "
+    >
+      <span
+        className="
+          text-[24px]
+          leading-[32px]
+          text-black
+
+          min-[800px]:text-[32px]
+          min-[800px]:leading-[40px]
+        "
+        style={{
+          fontFamily: "var(--font-satoshi)",
+          fontWeight: 700,
+        }}
+      >
+        {number}
+      </span>
+
+      <span
+        className="
+          whitespace-nowrap
+          text-[12px]
+          leading-[18px]
+          text-black/60
+
+          min-[800px]:text-[14px]
+        "
+        style={{
+          fontFamily: "var(--font-satoshi)",
+          fontWeight: 400,
+        }}
+      >
+        {label}
+      </span>
+    </div>
+  );
+}
+
+function StarIcon() {
+  return (
+    <svg
+      viewBox="0 0 104 104"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-full w-full"
+    >
+      <path
+        d="
+          M52 0
+          C55 31 73 49 104 52
+          C73 55 55 73 52 104
+          C49 73 31 55 0 52
+          C31 49 49 31 52 0
+          Z
+        "
+        fill="black"
+      />
+    </svg>
   );
 }
