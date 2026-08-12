@@ -275,7 +275,7 @@ export default function Header() {
           NAVBAR
       ====================================================== */}
 
-      <nav
+      {/* <nav
         className="
           relative
           flex
@@ -286,7 +286,19 @@ export default function Header() {
 
           min-[800px]:h-[96px]
         "
-      >
+      > */}
+      <nav
+  className="
+    relative
+    flex
+    h-[64px]
+    w-full
+    items-center
+    bg-white
+
+    min-[800px]:h-[72px]
+  "
+>
    <div
   className="
     mx-auto
