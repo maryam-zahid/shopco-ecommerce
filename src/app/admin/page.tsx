@@ -9,6 +9,9 @@ import StatCard from "@/components/admin/dashboard/stat-card";
 import { Button } from "@/components/ui/button";
 import RevenueChart from "@/components/admin/dashboard/revenue-chart";
 import ReturningRateChart from "@/components/admin/dashboard/returning-rate-chart";
+import SalesByLocation from "@/components/admin/dashboard/sales-by-location";
+import StoreVisitsChart from "@/components/admin/dashboard/store-visits-chart";
+import CustomerReviews from "@/components/admin/dashboard/customer-reviews";
 import {
   dashboardMetrics,
 } from "@/data/admin/dashboard-data";
@@ -154,6 +157,27 @@ export default function AdminDashboardPage() {
   <RevenueChart />
 
   <ReturningRateChart />
+</section>
+{/* =========================================
+    INSIGHTS ROW
+========================================== */}
+<section
+  className="
+    mt-[14px]
+    grid
+    grid-cols-1
+    gap-[14px]
+
+    min-[1000px]:grid-cols-2
+
+    min-[1400px]:grid-cols-[1.15fr_0.85fr_1.35fr]
+  "
+>
+  <SalesByLocation />
+
+  <StoreVisitsChart />
+
+  <CustomerReviews />
 </section>
     </div>
   );

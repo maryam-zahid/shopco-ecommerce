@@ -73,3 +73,103 @@ export const revenueSummary = {
   currentYear: 24828,
   previousYear: 25010,
 };
+export type LocationSalesItem = {
+  country: string;
+  change: number;
+  percentage: number;
+};
+
+export const locationSalesData: LocationSalesItem[] = [
+  {
+    country: "Canada",
+    change: 5.2,
+    percentage: 85,
+  },
+  {
+    country: "Greenland",
+    change: 7.8,
+    percentage: 80,
+  },
+  {
+    country: "Russia",
+    change: -2.1,
+    percentage: 63,
+  },
+  {
+    country: "China",
+    change: 3.4,
+    percentage: 60,
+  },
+  {
+    country: "Australia",
+    change: 1.2,
+    percentage: 45,
+  },
+  {
+    country: "Greece",
+    change: 1,
+    percentage: 40,
+  },
+];
+
+export type StoreVisitItem = {
+  source: string;
+  visitors: number;
+  fill: string;
+};
+
+export const storeVisitData: StoreVisitItem[] = [
+  {
+    source: "Direct",
+    visitors: 2550,
+    fill: "#09090B",
+  },
+  {
+    source: "Referrals",
+    visitors: 1700,
+    fill: "#A1A1AA",
+  },
+  {
+    source: "Email",
+    visitors: 2550,
+    fill: "#27272A",
+  },
+  {
+    source: "Other",
+    visitors: 1700,
+    fill: "#D4D4D8",
+  },
+  {
+    source: "Social",
+    visitors: 1700,
+    fill: "#52525B",
+  },
+];
+
+export const reviewDistribution = [
+  {
+    rating: 5,
+    count: 4000,
+    percentage: 82,
+  },
+  {
+    rating: 4,
+    count: 2100,
+    percentage: 54,
+  },
+  {
+    rating: 3,
+    count: 800,
+    percentage: 30,
+  },
+  {
+    rating: 2,
+    count: 631,
+    percentage: 18,
+  },
+  {
+    rating: 1,
+    count: 344,
+    percentage: 9,
+  },
+];

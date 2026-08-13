@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import {
@@ -7,6 +9,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+
+import { Download } from "lucide-react";
 
 import {
   Card,
@@ -23,63 +27,66 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-import { Download } from "lucide-react";
-
 const chartData = [
   {
+    month: "January",
+    desktop: 180,
+    mobile: 85,
+  },
+  {
     month: "February",
-    desktop: 310,
-    mobile: 180,
-  },
-  {
-    month: "March",
-    desktop: 260,
-    mobile: 140,
-  },
-  {
-    month: "April",
-    desktop: 470,
+    desktop: 285,
     mobile: 190,
   },
   {
+    month: "March",
+    desktop: 220,
+    mobile: 120,
+  },
+  {
+    month: "April",
+    desktop: 430,
+    mobile: 180,
+  },
+  {
     month: "May",
-    desktop: 420,
-    mobile: 150,
+    desktop: 365,
+    mobile: 130,
   },
   {
     month: "June",
-    desktop: 514,
+    desktop: 470,
     mobile: 140,
   },
   {
     month: "July",
-    desktop: 237,
+    desktop: 225,
     mobile: 120,
   },
   {
     month: "August",
-    desktop: 473,
-    mobile: 190,
+    desktop: 430,
+    mobile: 180,
   },
   {
     month: "September",
-    desktop: 420,
-    mobile: 145,
+    desktop: 365,
+    mobile: 125,
   },
   {
     month: "October",
-    desktop: 510,
+    desktop: 470,
     mobile: 280,
   },
   {
     month: "November",
-    desktop: 420,
-    mobile: 230,
+    desktop: 345,
+    mobile: 225,
   },
   {
     month: "December",
-    desktop: 650,
-    mobile: 450,
+    desktop: 630,
+    mobile: 430,
   },
 ];
 
@@ -88,9 +95,10 @@ const chartConfig = {
     label: "Desktop",
     color: "#111111",
   },
+
   mobile: {
     label: "Mobile",
-    color: "#C4C4C8",
+    color: "#C5C5C9",
   },
 } satisfies ChartConfig;
 
@@ -107,6 +115,7 @@ export default function ReturningRateChart() {
         shadow-none
       "
     >
+      {/* HEADER */}
       <CardHeader
         className="
           flex
@@ -173,6 +182,7 @@ export default function ReturningRateChart() {
         </div>
 
         <Button
+          type="button"
           variant="outline"
           className="
             h-[36px]
@@ -184,7 +194,6 @@ export default function ReturningRateChart() {
             text-[14px]
             leading-[20px]
             font-medium
-
             shadow-none
           "
         >
@@ -194,6 +203,7 @@ export default function ReturningRateChart() {
         </Button>
       </CardHeader>
 
+      {/* CHART */}
       <CardContent
         className="
           px-[22px]
@@ -212,20 +222,22 @@ export default function ReturningRateChart() {
             accessibilityLayer
             data={chartData}
             margin={{
-              left: 4,
-              right: 4,
               top: 8,
+              right: 6,
               bottom: 0,
+              left: 6,
             }}
           >
+            {/* HORIZONTAL GRID ONLY */}
             <CartesianGrid
               vertical={false}
               stroke="#ECECEF"
+              strokeWidth={1}
             />
 
             <YAxis
-              domain={[0, 700]}
               hide
+              domain={[0, 700]}
             />
 
             <XAxis
@@ -237,6 +249,9 @@ export default function ReturningRateChart() {
               tick={{
                 fill: "#737373",
               }}
+              tickFormatter={(value: string) =>
+                value.slice(0, 3)
+              }
             />
 
             <ChartTooltip
@@ -273,11 +288,10 @@ export default function ReturningRateChart() {
                           flex
                           min-w-[126px]
                           items-center
-                          justify-between
-                          gap-[18px]
                           py-[1px]
                         "
                       >
+                        {/* COLOR BOX */}
                         <span
                           className="
                             mr-[8px]
@@ -287,7 +301,8 @@ export default function ReturningRateChart() {
                             rounded-[3px]
                           "
                           style={{
-                            backgroundColor: config.color,
+                            backgroundColor:
+                              config.color,
                           }}
                         />
 
@@ -295,6 +310,7 @@ export default function ReturningRateChart() {
                           className="
                             text-[14px]
                             leading-[18px]
+                            font-normal
                             text-[#737373]
                           "
                         >
@@ -304,7 +320,8 @@ export default function ReturningRateChart() {
                         <span
                           className="
                             ml-auto
-                            pl-[16px]
+                            pl-[18px]
+
                             text-[14px]
                             leading-[18px]
                             font-medium
@@ -312,7 +329,9 @@ export default function ReturningRateChart() {
                             text-black
                           "
                         >
-                          {Number(value).toLocaleString()}
+                          {Number(
+                            value,
+                          ).toLocaleString()}
                         </span>
                       </div>
                     );
@@ -321,6 +340,7 @@ export default function ReturningRateChart() {
               }
             />
 
+            {/* DESKTOP */}
             <Line
               type="linear"
               dataKey="desktop"
@@ -329,10 +349,12 @@ export default function ReturningRateChart() {
               dot={false}
               activeDot={{
                 r: 4,
+                strokeWidth: 0,
                 fill: "#111111",
               }}
             />
 
+            {/* MOBILE */}
             <Line
               type="linear"
               dataKey="mobile"
@@ -341,6 +363,7 @@ export default function ReturningRateChart() {
               dot={false}
               activeDot={{
                 r: 4,
+                strokeWidth: 0,
                 fill: "#66666F",
               }}
             />
