@@ -12,6 +12,8 @@ import ReturningRateChart from "@/components/admin/dashboard/returning-rate-char
 import SalesByLocation from "@/components/admin/dashboard/sales-by-location";
 import StoreVisitsChart from "@/components/admin/dashboard/store-visits-chart";
 import CustomerReviews from "@/components/admin/dashboard/customer-reviews";
+import RecentOrdersTable from "@/components/admin/dashboard/recent-orders-table";
+import BestSellingProducts from "@/components/admin/dashboard/best-selling-products";
 import {
   dashboardMetrics,
 } from "@/data/admin/dashboard-data";
@@ -78,26 +80,6 @@ export default function AdminDashboardPage() {
 
             17 Jul 2026 - 13 Aug 2026
           </Button>
-
-          {/* <Button
-            className="
-              h-[36px]
-              rounded-[6px]
-              bg-black
-              px-[13px]
-              text-[12px]
-              text-white
-              hover:bg-black/85
-            "
-            style={{
-              fontFamily: "var(--font-satoshi)",
-              fontWeight: 500,
-            }}
-          >
-            <Download className="size-[15px]" />
-
-            Download
-          </Button> */}
           <Button
   className="
     h-[36px]
@@ -178,6 +160,24 @@ export default function AdminDashboardPage() {
   <StoreVisitsChart />
 
   <CustomerReviews />
+</section>
+{/* =========================================
+    TABLES ROW
+========================================== */}
+<section
+  className="
+    mt-[14px]
+
+    grid
+    grid-cols-1
+    gap-[14px]
+
+    min-[1200px]:grid-cols-[1.35fr_0.95fr]
+  "
+>
+  <RecentOrdersTable />
+
+  <BestSellingProducts />
 </section>
     </div>
   );

@@ -173,3 +173,149 @@ export const reviewDistribution = [
     percentage: 9,
   },
 ];
+export type RecentOrder = {
+  id: string;
+  customer: string;
+  avatar: string;
+  product: string;
+  amount: number;
+  status:
+    | "Processing"
+    | "Paid"
+    | "Success"
+    | "Failed";
+};
+
+export const recentOrdersData: RecentOrder[] = [
+  {
+    id: "#1023",
+    customer: "Theodore Bell",
+    avatar: "/images/admin/customers/customer-1.jpg",
+    product: "Tire Doodad",
+    amount: 300,
+    status: "Processing",
+  },
+  {
+    id: "#2045",
+    customer: "Amelia Grant",
+    avatar: "/images/admin/customers/customer-2.jpg",
+    product: "Engine Kit",
+    amount: 450,
+    status: "Paid",
+  },
+  {
+    id: "#3067",
+    customer: "Eleanor Ward",
+    avatar: "/images/admin/customers/customer-3.jpg",
+    product: "Brake Pad",
+    amount: 200,
+    status: "Success",
+  },
+  {
+    id: "#4089",
+    customer: "Henry Carter",
+    avatar: "/images/admin/customers/customer-4.jpg",
+    product: "Fuel Pump",
+    amount: 500,
+    status: "Processing",
+  },
+  {
+    id: "#5102",
+    customer: "Olivia Harris",
+    avatar: "/images/admin/customers/customer-5.jpg",
+    product: "Steering Wheel",
+    amount: 350,
+    status: "Failed",
+  },
+  {
+    id: "#6123",
+    customer: "James Robinson",
+    avatar: "/images/admin/customers/customer-6.jpg",
+    product: "Air Filter",
+    amount: 180,
+    status: "Paid",
+  },
+  {
+    id: "#7145",
+    customer: "Sophia Martinez",
+    avatar: "/images/admin/customers/customer-7.jpg",
+    product: "Oil Filter",
+    amount: 220,
+    status: "Success",
+  },
+  {
+    id: "#8167",
+    customer: "Liam Thompson",
+    avatar: "/images/admin/customers/customer-8.jpg",
+    product: "Radiator Cap",
+    amount: 290,
+    status: "Processing",
+  },
+];
+
+export type BestSellingProduct = {
+  id: string;
+  name: string;
+  shortName: string;
+  sold: number;
+  sales: number;
+};
+
+export const bestSellingProductsData: BestSellingProduct[] = [
+  {
+    id: "P001",
+    name: "Sports Shoes",
+    shortName: "SS",
+    sold: 316,
+    sales: 10,
+  },
+  {
+    id: "P002",
+    name: "Black T-Shirt",
+    shortName: "BT",
+    sold: 274,
+    sales: 20,
+  },
+  {
+    id: "P003",
+    name: "Jeans",
+    shortName: "JN",
+    sold: 195,
+    sales: 15,
+  },
+  {
+    id: "P004",
+    name: "Red Sneakers",
+    shortName: "RS",
+    sold: 402,
+    sales: 40,
+  },
+  {
+    id: "P005",
+    name: "Red Scarf",
+    shortName: "SC",
+    sold: 280,
+    sales: 37,
+  },
+  {
+    id: "P006",
+    name: "Casual Hoodie",
+    shortName: "CH",
+    sold: 150,
+    sales: 18,
+  },
+  {
+    id: "P007",
+    name: "Skinny Fit Jeans",
+    shortName: "SJ",
+    sold: 316,
+    sales: 25,
+  },
+  {
+    id: "P008",
+    name: "Gradient T-Shirt",
+    shortName: "GT",
+    sold: 290,
+    sales: 12,
+  },
+];

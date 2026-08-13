@@ -114,45 +114,42 @@ export default function SalesByLocation() {
       variant="outline"
       className="
         h-[36px]
+        rounded-[8px]
 
-        rounded-[7px]
+        !border-[2px]
+        !border-solid
+        !border-[#D0D0D5]
 
-        border
-        border-[#D9D9DE]
-
-        bg-white
+        !bg-white
+        !shadow-none
 
         px-[12px]
 
         text-[14px]
         leading-[20px]
         font-medium
-        text-black
+        text-foreground
 
-        shadow-[0_1px_3px_rgba(0,0,0,0.08)]
-
-        transition-all
+        transition-colors
         duration-150
 
-        hover:bg-[#F3F3F4]
-        hover:text-black
+        hover:!border-[#C2C2C8]
+        hover:!bg-[#F3F3F4]
 
-        data-[state=open]:bg-[#F3F3F4]
-        data-[state=open]:text-black
+        data-[state=open]:!border-[#C2C2C8]
+        data-[state=open]:!bg-[#F3F3F4]
+
+        focus-visible:!outline-none
+        focus-visible:!ring-0
       "
     />
   }
 >
   <FolderUp
-    className="
-      h-[16px]
-      w-[16px]
-      shrink-0
-      stroke-[2]
-    "
+    className="size-[16px]"
+    strokeWidth={1.8}
   />
-
-  <span>Export</span>
+  Export
 </DropdownMenuTrigger>
 
   <DropdownMenuContent
