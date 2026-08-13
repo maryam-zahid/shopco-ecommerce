@@ -55,123 +55,80 @@ export default function AdminHeader() {
       />
 
       {/* SEARCH */}
-      <div
-        className="
-          relative
-          hidden
-          w-[320px]
-
-          min-[800px]:block
-          min-[1200px]:w-[360px]
-        "
-      >
-        <Search
-          className="
-            pointer-events-none
-            absolute
-            left-[11px]
-            top-1/2
-            z-10
-
-            h-[16px]
-            w-[16px]
-
-            -translate-y-1/2
-            text-black/50
-          "
-        />
-
-        {/* <Input
-          type="search"
-          placeholder="Search..."
-          className="
-            h-[36px]
-            w-full
-
-            rounded-[7px]
-            border
-            border-solid
-            border-[#D1D1D6]
-
-            bg-white
-
-            pl-[36px]
-            pr-[52px]
-
-            text-[13px]
-            leading-[18px]
-            text-black
-
-            shadow-[0_1px_2px_rgba(0,0,0,0.04)]
-
-            placeholder:text-black/45
-
-            focus-visible:border-black/30
-            focus-visible:ring-1
-            focus-visible:ring-black/10
-          "
-          style={{
-            fontFamily: "var(--font-satoshi)",
-            fontWeight: 400,
-          }}
-        /> */}
-<Input
-  type="search"
-  placeholder="Search..."
+     <div
   className="
-    h-[36px]
-    w-full
-    rounded-[7px]
+    flex
+    h-[40px]
+    w-[300px]
+    items-center
+    gap-[10px]
 
-    border
+    rounded-[7px]
+    border-2
+    border-solid
     border-[#D1D1D6]
     bg-white
 
-    pl-[36px]
-    pr-[52px]
+    px-[12px]
 
-    text-[14px]
-    leading-[20px]
-    font-normal
+    shadow-none
+    transition-colors
+    duration-150
 
-    placeholder:text-muted-foreground
-
-    shadow-[0_1px_2px_rgba(0,0,0,0.04)]
+    hover:border-[#BFC0C5]
+    focus-within:border-[#AFAFB5]
   "
-/>
-        <span
-          className="
-            pointer-events-none
+>
+  <Search
+    className="
+      size-[16px]
+      shrink-0
+      text-[#6B6B70]
+    "
+  />
 
-            absolute
-            right-[6px]
-            top-1/2
+  <input
+    type="text"
+    placeholder="Search..."
+    className="
+      h-full
+      min-w-0
+      flex-1
+      border-0
+      bg-transparent
+      p-0
 
-            flex
-            h-[26px]
-            min-w-[34px]
+      text-[14px]
+      text-[#18181B]
 
-            -translate-y-1/2
-            items-center
-            justify-center
+      outline-none
+      placeholder:text-[#77777D]
 
-            rounded-[5px]
-            bg-[#E9E9EC]
+      focus:outline-none
+      focus:ring-0
+    "
+  />
 
-            px-[6px]
+  <div
+    className="
+      flex
+      h-[24px]
+      items-center
+      justify-center
 
-            text-[11px]
-            leading-none
-            text-black/70
-          "
-          style={{
-            fontFamily: "var(--font-satoshi)",
-            fontWeight: 500,
-          }}
-        >
-          ⌘ K
-        </span>
-      </div>
+      rounded-[5px]
+      bg-[#EEEEF0]
+
+      px-[6px]
+
+      text-[12px]
+      font-medium
+      text-[#55555A]
+    "
+  >
+    ⌘K
+  </div>
+</div>
 
       {/* RIGHT SIDE */}
       <div className="ml-auto flex items-center gap-[4px]">

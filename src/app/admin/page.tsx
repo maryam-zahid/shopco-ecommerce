@@ -80,19 +80,30 @@ export default function AdminDashboardPage() {
 
             17 Jul 2026 - 13 Aug 2026
           </Button>
-          <Button
+         <Button
+  type="button"
   className="
     h-[36px]
     rounded-[6px]
-    bg-black
+
+    !border
+    !border-[#08090A]
+    !bg-[#08090A]
+
     px-[12px]
 
     text-[14px]
     leading-[20px]
     font-medium
-    text-white
+    !text-white
 
-    hover:bg-black/85
+    shadow-none
+    transition-colors
+    duration-150
+
+    hover:!border-[#18181B]
+    hover:!bg-[#18181B]
+    hover:!text-white
   "
 >
   <Download className="size-[16px]" />
