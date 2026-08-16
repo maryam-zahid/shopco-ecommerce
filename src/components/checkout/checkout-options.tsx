@@ -15,7 +15,11 @@ import {
   useTransition,
 } from "react";
 
-import { validateCheckoutAction } from "@/actions/checkout.actions";
+import {
+  placeOrderAction,
+  validateCheckoutAction,
+} from "@/actions/checkout.actions";
+import { useRouter } from "next/navigation";
 import CheckoutAddressForm from "@/components/checkout/checkout-address-form";
 
 type AddressOption = {
@@ -43,6 +47,7 @@ export default function CheckoutOptions({
   const defaultAddress =
     addresses.find((address) => address.isDefault) ??
     addresses[0];
+    const router = useRouter();
 
   const [selectedAddressId, setSelectedAddressId] =
     useState(defaultAddress?.id ?? "");
@@ -75,20 +80,24 @@ export default function CheckoutOptions({
     };
   }, [message]);
 
-  function handleContinue() {
-    if (!selectedAddressId) {
-      setIsError(true);
-      setMessage(
-        "Please select or add a shipping address.",
-      );
-      return;
-    }
+ function handleContinue() {
+  if (!selectedAddressId) {
+    setIsError(true);
+    setMessage(
+      "Please select or add a shipping address.",
+    );
+    return;
+  }
 
-    startTransition(async () => {
+  startTransition(async () => {
+    setMessage(null);
+    setIsError(false);
+
+    if (paymentMethod === "COD") {
       const result =
-        await validateCheckoutAction({
+        await placeOrderAction({
           addressId: selectedAddressId,
-          paymentMethod,
+          paymentMethod: "COD",
         });
 
       if (!result.success) {
@@ -98,14 +107,38 @@ export default function CheckoutOptions({
       }
 
       setIsError(false);
-
       setMessage(
-        paymentMethod === "COD"
-          ? "Checkout verified. Ready to place your Cash on Delivery order."
-          : "Checkout verified. Ready to continue to secure card payment.",
+        "Your order has been placed successfully.",
       );
-    });
-  }
+
+      window.setTimeout(() => {
+        router.push(
+          `/order-success/${result.order.orderNumber}`,
+        );
+        router.refresh();
+      }, 700);
+
+      return;
+    }
+
+    const result =
+      await validateCheckoutAction({
+        addressId: selectedAddressId,
+        paymentMethod: "CARD",
+      });
+
+    if (!result.success) {
+      setIsError(true);
+      setMessage(result.message);
+      return;
+    }
+
+    setIsError(false);
+    setMessage(
+      "Checkout verified. Ready to continue to secure card payment.",
+    );
+  });
+}
 
   return (
     <>
@@ -265,179 +298,210 @@ export default function CheckoutOptions({
                     selectedAddressId === address.id;
 
                   return (
-                  <button
+                <button
   key={address.id}
   type="button"
   onClick={() =>
     setSelectedAddressId(address.id)
   }
-  className="
-    relative
-    min-h-[150px]
-    w-full
+className="
+  relative
+  min-h-[188px]
+  w-full
 
-    rounded-[10px]
+  rounded-[10px]
 
-    bg-white
+  bg-white
 
-    p-[16px]
+  p-[20px]
 
-    text-left
+  text-left
 
-    transition-all
-    duration-150
+  transition-all
+  duration-150
 
-    hover:bg-[#FCFCFC]
-  "
+  hover:bg-[#FCFCFC]
+"
   style={{
     border: selected
-      ? "1.6px solid rgba(0, 0, 0, 0.62)"
+      ? "1.6px solid rgba(0, 0, 0, 0.58)"
       : "1.3px solid rgba(0, 0, 0, 0.20)",
 
     boxShadow:
       "0 2px 7px rgba(0, 0, 0, 0.035)",
   }}
 >
-                      <div
-                        className="
-                          flex
-                          items-start
-                          gap-[12px]
-                        "
-                      >
-                        {/* RADIO */}
-                        <div
-                          className={`
-                            mt-[2px]
+ {/* TOP ROW */}
+<div className="flex items-start gap-[14px]">
+  {/* RADIO */}
+  <div
+    className="
+      mt-[2px]
 
-                            flex
-                            h-[20px]
-                            w-[20px]
-                            shrink-0
-                            items-center
-                            justify-center
+      flex
+      h-[20px]
+      w-[20px]
+      shrink-0
+      items-center
+      justify-center
 
-                            rounded-full
+      rounded-full
+    "
+    style={{
+      border: selected
+        ? "2px solid #000000"
+        : "1.5px solid rgba(0,0,0,0.45)",
 
-                            ${
-                              selected
-                                ? "border-2 border-black bg-black"
-                                : "border-[1.5px] border-black/35 bg-white"
-                            }
-                          `}
-                        >
-                          {selected && (
-                            <div
-                              className="
-                                h-[7px]
-                                w-[7px]
-                                rounded-full
-                                bg-white
-                              "
-                            />
-                          )}
-                        </div>
+      backgroundColor: selected
+        ? "#000000"
+        : "#FFFFFF",
+    }}
+  >
+    {selected && (
+      <span
+        className="
+          h-[7px]
+          w-[7px]
+          rounded-full
+          bg-white
+        "
+      />
+    )}
+  </div>
 
-                        <div className="min-w-0 flex-1">
-                          <div
-                            className="
-                              flex
-                              items-start
-                              justify-between
-                              gap-[12px]
-                            "
-                          >
-                            <p
-                              className="
-                                text-[15px]
-                                font-semibold
-                                text-black
-                              "
-                            >
-                              {address.fullName}
-                            </p>
+  {/* MAIN CONTENT */}
+  <div className="min-w-0 flex-1">
+    {/* NAME + DEFAULT */}
+    <div
+      className="
+        flex
+        items-start
+        justify-between
+        gap-[16px]
+      "
+    >
+      <p
+        className="
+          min-w-0
 
-                            {address.isDefault && (
-                              <span
-                                className="
-                                  shrink-0
+          text-[15px]
+          font-semibold
+          leading-[20px]
+          text-black
+        "
+        style={{
+          fontFamily:
+            "var(--font-satoshi)",
+        }}
+      >
+        {address.fullName}
+      </p>
 
-                                  rounded-[5px]
+      {address.isDefault && (
+        <span
+          className="
+  flex
+  h-[27px]
+  shrink-0
+  items-center
+  justify-center
 
-                                  bg-black
+  rounded-[5px]
 
-                                  px-[9px]
-                                  py-[4px]
+  bg-black
 
-                                  text-[10px]
-                                  font-medium
-                                  text-white
-                                "
-                              >
-                                Default
-                              </span>
-                            )}
-                          </div>
+  px-[11px]
 
-                          <p
-                            className="
-                              mt-[6px]
+  text-[11px]
+  font-medium
+  text-white
+"
+          style={{
+            backgroundColor: "#000000",
+            color: "#FFFFFF",
+          }}
+        >
+          Default
+        </span>
+      )}
+    </div>
 
-                              text-[13px]
-                              leading-[19px]
-                              text-black/75
-                            "
-                          >
-                            {address.addressLine1}
+    {/* ADDRESS */}
+    <div
+      className="
+        mt-[12px]
 
-                            {address.addressLine2
-                              ? `, ${address.addressLine2}`
-                              : ""}
+        pr-[4px]
 
-                            <br />
+        text-[13px]
+        leading-[20px]
+        text-black/70
+      "
+      style={{
+        fontFamily:
+          "var(--font-satoshi)",
+      }}
+    >
+      <p>
+        {address.addressLine1}
+        {address.addressLine2
+          ? `, ${address.addressLine2}`
+          : ""}
+      </p>
 
-                            {address.city}
+      <p>
+        {address.city}
+        {address.state
+          ? `, ${address.state}`
+          : ""}{" "}
+        {address.postalCode}
+      </p>
 
-                            {address.state
-                              ? `, ${address.state}`
-                              : ""}{" "}
-                            {address.postalCode}
+      <p>{address.country}</p>
 
-                            <br />
+      <p className="mt-[2px]">
+        {address.phone}
+      </p>
+    </div>
 
-                            {address.country}
+    {/* EDIT */}
+   <div
+  className="
+    mt-[14px]
 
-                            <br />
+    flex
+    items-center
+    justify-end
 
-                            {address.phone}
-                          </p>
+    pr-[2px]
+    pb-[2px]
+  "
+>
+      <span
+  className="
+    flex
+    items-center
+    gap-[7px]
 
-                          <div
-                            className="
-                              mt-[10px]
-                              flex
-                              justify-end
-                            "
-                          >
-                            <span
-                              className="
-                                flex
-                                items-center
-                                gap-[5px]
+    px-[3px]
+    py-[3px]
 
-                                text-[12px]
-                                font-medium
-                                text-black
-                              "
-                            >
-                              <Pencil className="size-[14px]" />
+    text-[13px]
+    font-medium
+    text-black
+  "
+  style={{
+    fontFamily: "var(--font-satoshi)",
+  }}
+>
+  <Pencil className="size-[15px]" />
 
-                              Edit
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </button>
+  Edit
+</span>
+    </div>
+  </div>
+</div>
+</button>
                   );
                 })}
               </div>

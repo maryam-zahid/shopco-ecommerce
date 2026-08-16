@@ -34,6 +34,7 @@ export default function AuthForm({
 }: AuthFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+const isLogin = mode === "login";
 
 const callbackUrl =
   searchParams.get("callbackUrl") ?? "/";
@@ -54,7 +55,6 @@ const callbackUrl =
   const [isPending, startTransition] =
     useTransition();
 
-  const isLogin = mode === "login";
 
   function handleSubmit(
     event: FormEvent<HTMLFormElement>,
