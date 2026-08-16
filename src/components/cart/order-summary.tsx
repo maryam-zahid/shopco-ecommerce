@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import { useState } from "react";
 
 type OrderSummaryProps = {
@@ -7,6 +7,7 @@ type OrderSummaryProps = {
   discount: number;
   deliveryFee: number;
   total: number;
+  isEmpty: boolean;
 };
 
 export default function OrderSummary({
@@ -14,16 +15,17 @@ export default function OrderSummary({
   discount,
   deliveryFee,
   total,
+  isEmpty,
 }: OrderSummaryProps) {
   const [promoCode, setPromoCode] = useState("");
 
-  function handleApplyPromo() {
-    if (!promoCode.trim()) return;
+ function handleApplyPromo() {
+  if (!promoCode.trim()) return;
 
-    alert(
-      `Promo code "${promoCode}" applied for frontend demo.`,
-    );
-  }
+  alert(
+    "Promo codes will be connected to the database in the next step.",
+  );
+}
 
   return (
     <div
@@ -69,21 +71,21 @@ export default function OrderSummary({
           gap-[20px]
         "
       >
-        <SummaryRow
-          label="Subtotal"
-          value={`$${subtotal}`}
-        />
+       <SummaryRow
+  label="Subtotal"
+  value={`$${subtotal.toFixed(2)}`}
+/>
 
-        <SummaryRow
-          label="Discount (-20%)"
-          value={`-$${discount}`}
-          danger
-        />
+       <SummaryRow
+  label="Discount"
+  value={`-$${discount.toFixed(2)}`}
+  danger
+/>
 
-        <SummaryRow
-          label="Delivery Fee"
-          value={`$${deliveryFee}`}
-        />
+      <SummaryRow
+  label="Delivery Fee"
+  value={`$${deliveryFee.toFixed(2)}`}
+/>
       </div>
 
       {/* DIVIDER */}
@@ -97,11 +99,11 @@ export default function OrderSummary({
       />
 
       {/* TOTAL */}
-      <SummaryRow
-        label="Total"
-        value={`$${total}`}
-        total
-      />
+    <SummaryRow
+  label="Total"
+  value={`$${total.toFixed(2)}`}
+  total
+/>
 
       {/* PROMO + CHECKOUT */}
       <div
@@ -202,8 +204,9 @@ export default function OrderSummary({
         </div>
 
         {/* CHECKOUT */}
-        <button
+        {/* <button
           type="button"
+          disabled={isEmpty}
           className="
             flex
             h-[54px]
@@ -222,6 +225,9 @@ export default function OrderSummary({
             text-[16px]
             leading-[22px]
             text-white
+
+            disabled:cursor-not-allowed
+disabled:opacity-50
           "
           style={{
             fontFamily: "var(--font-satoshi)",
@@ -234,7 +240,83 @@ export default function OrderSummary({
           <span>Go to Checkout</span>
 
           <ArrowRightIcon />
-        </button>
+        </button> */}
+
+       {/* CHECKOUT */}
+{isEmpty ? (
+  <button
+    type="button"
+    disabled
+    className="
+      flex
+      h-[54px]
+      w-full
+      items-center
+      justify-center
+      gap-[12px]
+
+      rounded-[62px]
+      border
+      border-black
+      bg-black
+
+      px-[24px]
+
+      text-[16px]
+      leading-[22px]
+      text-white
+
+      cursor-not-allowed
+      opacity-50
+    "
+    style={{
+      fontFamily: "var(--font-satoshi)",
+      fontWeight: 500,
+      border: "1px solid #000000",
+      backgroundColor: "#000000",
+      color: "#FFFFFF",
+    }}
+  >
+    <span>Go to Checkout</span>
+
+    <ArrowRightIcon />
+  </button>
+) : (
+  <Link
+    href="/checkout"
+    className="
+      flex
+      h-[54px]
+      w-full
+      items-center
+      justify-center
+      gap-[12px]
+
+      rounded-[62px]
+      border
+      border-black
+      bg-black
+
+      px-[24px]
+
+      text-[16px]
+      leading-[22px]
+      text-white
+      no-underline
+    "
+    style={{
+      fontFamily: "var(--font-satoshi)",
+      fontWeight: 500,
+      border: "1px solid #000000",
+      backgroundColor: "#000000",
+      color: "#FFFFFF",
+    }}
+  >
+    <span>Go to Checkout</span>
+
+    <ArrowRightIcon />
+  </Link>
+)}
       </div>
     </div>
   );

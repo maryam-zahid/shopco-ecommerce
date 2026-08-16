@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
-
+import AccountMenu from "@/components/layout/account-menu";
 /* =========================================================
    ICONS
 ========================================================= */
@@ -681,20 +681,9 @@ export default function Header() {
 </Link>
             {/* USER */}
 
-            <Link
-              href="/account"
-              aria-label="Account"
-              className="
-                flex
-                h-[24px]
-                w-[24px]
-                items-center
-                justify-center
-                text-black
-              "
-            >
-              <UserIcon />
-            </Link>
+          {/* USER / AUTH */}
+
+<AccountMenu />
           </div>
         </div>
       </nav>

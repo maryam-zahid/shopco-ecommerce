@@ -1,58 +1,276 @@
-import { Button as ButtonPrimitive } from "@base-ui/react/button"
-import { cva, type VariantProps } from "class-variance-authority"
+import { Button as ButtonPrimitive } from "@base-ui/react/button";
+import {
+  cva,
+  type VariantProps,
+} from "class-variance-authority";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  `
+    group/button
+    inline-flex
+    shrink-0
+    items-center
+    justify-center
+
+    whitespace-nowrap
+
+    border
+    border-transparent
+
+    bg-clip-padding
+
+    text-sm
+    font-medium
+
+    outline-none
+    select-none
+
+    transition-all
+    duration-150
+
+    focus-visible:ring-2
+    focus-visible:ring-black/10
+
+    active:not-aria-[haspopup]:translate-y-px
+
+    disabled:pointer-events-none
+    disabled:cursor-not-allowed
+    disabled:opacity-50
+
+    aria-invalid:border-destructive
+    aria-invalid:ring-2
+    aria-invalid:ring-destructive/20
+
+    [&_svg]:pointer-events-none
+    [&_svg]:shrink-0
+    [&_svg:not([class*='size-'])]:size-4
+  `,
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/80",
-        outline:
-          "border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
+        default:
+          `
+            border-black
+            bg-black
+            text-white
+
+            hover:border-[#1A1A1A]
+            hover:bg-[#1A1A1A]
+            hover:text-white
+          `,
+
+     outline:
+  `
+    border-2
+    border-black/40
+
+    bg-white
+    text-black
+
+    hover:border-black
+    hover:bg-[#F8F8F8]
+    hover:text-black
+  `,
+
+        subtle:
+          `
+            border-black/10
+            bg-[#F8F8F8]
+            text-black
+
+            hover:border-black/20
+            hover:bg-[#F0F0F0]
+          `,
+
+        selected:
+          `
+            border-2
+            border-black
+            bg-white
+            text-black
+    shadow-[0_0_0_1px_rgba(0,0,0,0.04)]
+
+            hover:bg-[#FAFAFA]
+          `,
+
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
+          `
+            bg-secondary
+            text-secondary-foreground
+
+            hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)]
+          `,
+
         ghost:
-          "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
+          `
+            border-transparent
+            bg-transparent
+            text-black
+
+            hover:bg-black/5
+            hover:text-black
+          `,
+
         destructive:
-          "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
-        link: "text-primary underline-offset-4 hover:underline",
+          `
+            border-red-600
+            bg-red-600
+            text-white
+
+            hover:bg-red-700
+          `,
+
+        link:
+          `
+            border-transparent
+            bg-transparent
+            p-0
+
+            text-black
+            underline-offset-4
+
+            hover:underline
+          `,
       },
+
       size: {
         default:
-          "h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        xs: "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
-        lg: "h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        icon: "size-8",
+          `
+            h-[42px]
+            gap-[8px]
+
+            rounded-[8px]
+
+            px-[16px]
+
+            text-[14px]
+          `,
+
+        xs:
+          `
+            h-[30px]
+            gap-[5px]
+
+            rounded-[6px]
+
+            px-[10px]
+
+            text-[12px]
+          `,
+
+        sm:
+          `
+            h-[36px]
+            gap-[6px]
+
+            rounded-[7px]
+
+            px-[12px]
+
+            text-[13px]
+          `,
+
+        lg:
+          `
+            h-[48px]
+            gap-[8px]
+
+            rounded-[9px]
+
+            px-[20px]
+
+            text-[14px]
+          `,
+
+        shop:
+          `
+            h-[54px]
+            gap-[10px]
+
+            rounded-[62px]
+
+            px-[24px]
+
+            text-[16px]
+            leading-[22px]
+          `,
+
+        checkout:
+          `
+            h-[56px]
+            gap-[10px]
+
+            rounded-[8px]
+
+            px-[24px]
+
+            text-[15px]
+            font-semibold
+            uppercase
+          `,
+
+        icon:
+          `
+            size-[40px]
+            rounded-[8px]
+            p-0
+          `,
+
         "icon-xs":
-          "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
+          `
+            size-[30px]
+            rounded-[6px]
+            p-0
+          `,
+
         "icon-sm":
-          "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
-        "icon-lg": "size-9",
+          `
+            size-[36px]
+            rounded-[7px]
+            p-0
+          `,
+
+        "icon-lg":
+          `
+            size-[48px]
+            rounded-[9px]
+            p-0
+          `,
       },
     },
+
     defaultVariants: {
       variant: "default",
       size: "default",
     },
-  }
-)
+  },
+);
 
 function Button({
   className,
   variant = "default",
   size = "default",
   ...props
-}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
+}: ButtonPrimitive.Props &
+  VariantProps<typeof buttonVariants>) {
   return (
     <ButtonPrimitive
       data-slot="button"
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(
+        buttonVariants({
+          variant,
+          size,
+          className,
+        }),
+      )}
       {...props}
     />
-  )
+  );
 }
 
-export { Button, buttonVariants }
+export {
+  Button,
+  buttonVariants,
+};

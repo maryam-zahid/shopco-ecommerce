@@ -29,7 +29,8 @@ export default function ProductCard({
       ================================================== */}
 
       <Link
-        href={`/products/${product.slug}`}
+        // href={`/products/${product.slug}`}
+        href={`/product/${product.slug}`}
         className="
           relative
           block
@@ -68,8 +69,10 @@ export default function ProductCard({
       {/* =================================================
           PRODUCT NAME
       ================================================== */}
+ <Link
+    href={`/product/${product.slug}`}
+    >
 
-      <Link href={`/products/${product.slug}`}>
         <h3
           className="
             m-0

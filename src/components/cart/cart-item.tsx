@@ -5,9 +5,10 @@ import type { CartItemData } from "./cart-page";
 
 type CartItemProps = {
   item: CartItemData;
-  onIncrease: (id: number) => void;
-  onDecrease: (id: number) => void;
-  onRemove: (id: number) => void;
+  onIncrease: (id: string) => void;
+  onDecrease: (id: string) => void;
+  onRemove: (id: string) => void;
+  isPending: boolean;
 };
 
 export default function CartItem({
@@ -15,6 +16,7 @@ export default function CartItem({
   onIncrease,
   onDecrease,
   onRemove,
+  isPending,
 }: CartItemProps) {
   return (
     <div
@@ -169,7 +171,7 @@ export default function CartItem({
               max-[799px]:min-w-[128px]
             "
           >
-            <button
+            {/* <button
               type="button"
               onClick={() =>
                 onDecrease(item.id)
@@ -188,7 +190,33 @@ export default function CartItem({
               "
             >
               −
-            </button>
+            </button> */}
+            <button
+  type="button"
+  disabled={
+    isPending || item.quantity <= 1
+  }
+  onClick={() =>
+    onDecrease(item.id)
+  }
+  className="
+    flex
+    h-[24px]
+    w-[24px]
+    items-center
+    justify-center
+    border-0
+    bg-transparent
+    p-0
+    text-[24px]
+    text-black
+
+    disabled:cursor-not-allowed
+    disabled:opacity-40
+  "
+>
+  −
+</button>
 
             <span
               className="
@@ -206,56 +234,66 @@ export default function CartItem({
               {item.quantity}
             </span>
 
-            <button
-              type="button"
-              onClick={() =>
-                onIncrease(item.id)
-              }
-              className="
-                flex
-                h-[24px]
-                w-[24px]
-                items-center
-                justify-center
-                border-0
-                bg-transparent
-                p-0
-                text-[24px]
-                text-black
-              "
-            >
-              +
-            </button>
+          <button
+  type="button"
+  disabled={
+    isPending ||
+    item.quantity >= item.stock
+  }
+  onClick={() =>
+    onIncrease(item.id)
+  }
+  className="
+    flex
+    h-[24px]
+    w-[24px]
+    items-center
+    justify-center
+    border-0
+    bg-transparent
+    p-0
+    text-[24px]
+    text-black
+
+    disabled:cursor-not-allowed
+    disabled:opacity-40
+  "
+>
+  +
+</button>
           </div>
         </div>
       </div>
 
       {/* DELETE */}
-      <button
-        type="button"
-        onClick={() =>
-          onRemove(item.id)
-        }
-        aria-label={`Remove ${item.name}`}
-        className="
-          absolute
-          right-0
-          top-0
+      {/* DELETE */}
+<button
+  type="button"
+  onClick={() => onRemove(item.id)}
+  disabled={isPending}
+  aria-label={`Remove ${item.name}`}
+  className="
+    absolute
+    right-0
+    top-0
 
-          flex
-          h-[24px]
-          w-[24px]
-          items-center
-          justify-center
+    flex
+    h-[24px]
+    w-[24px]
+    items-center
+    justify-center
 
-          border-0
-          bg-transparent
-          p-0
-          text-[#FF3333]
-        "
-      >
-        <TrashIcon />
-      </button>
+    border-0
+    bg-transparent
+    p-0
+    text-[#FF3333]
+
+    disabled:cursor-not-allowed
+    disabled:opacity-40
+  "
+>
+  <TrashIcon />
+</button>
     </div>
   );
 }
