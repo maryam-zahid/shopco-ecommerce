@@ -674,22 +674,90 @@ export async function createCodOrder(
         },
       });
 
-      return {
-        id: order.id,
+    return {
+  id: order.id,
 
-        orderNumber:
-          order.orderNumber,
+  orderNumber:
+    order.orderNumber,
 
-        total: Number(order.total),
+  total: Number(order.total),
 
-        status: order.status,
+  subtotal:
+    Number(order.subtotal),
 
-        paymentStatus:
-          order.paymentStatus,
+  couponDiscount:
+    Number(
+      order.couponDiscount,
+    ),
 
-        paymentMethod:
-          order.paymentMethod,
-      };
+  shippingAmount:
+    Number(
+      order.shippingAmount,
+    ),
+
+  taxAmount:
+    Number(order.taxAmount),
+
+  status:
+    order.status,
+
+  paymentStatus:
+    order.paymentStatus,
+
+  paymentMethod:
+    order.paymentMethod,
+
+  shipping: {
+    fullName:
+      order.shippingFullName,
+
+    email:
+      order.shippingEmail,
+
+    phone:
+      order.shippingPhone,
+
+    addressLine1:
+      order.shippingAddressLine1,
+
+    addressLine2:
+      order.shippingAddressLine2,
+
+    city:
+      order.shippingCity,
+
+    state:
+      order.shippingState,
+
+    postalCode:
+      order.shippingPostalCode,
+
+    country:
+      order.shippingCountry,
+  },
+
+  items: order.items.map(
+    (item) => ({
+      productName:
+        item.productName,
+
+      colorName:
+        item.colorName,
+
+      size:
+        item.size,
+
+      quantity:
+        item.quantity,
+
+      unitPrice:
+        Number(item.unitPrice),
+
+      subtotal:
+        Number(item.subtotal),
+    }),
+  ),
+};
     },
   );
 }

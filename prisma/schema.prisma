@@ -80,6 +80,7 @@ model Address {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   fullName     String
+  email        String?
   phone        String
   addressLine1 String
   addressLine2 String?
@@ -289,6 +290,7 @@ model Order {
   couponCodeSnapshot String?
 
   shippingFullName     String
+  shippingEmail        String?
   shippingPhone        String
   shippingAddressLine1 String
   shippingAddressLine2 String?

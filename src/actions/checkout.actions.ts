@@ -6,7 +6,9 @@ import {
   createCodOrder,
   validateCheckout,
 } from "@/services/checkout.service";
-
+import {
+  sendOrderConfirmationEmail,
+} from "@/lib/mail";
 import {
   checkoutSelectionSchema,
 } from "@/validations/checkout.schema";
@@ -190,6 +192,56 @@ export async function placeOrderAction(
         session.user.id,
         parsed.data,
       );
+      if (order.shipping.email) {
+  try {
+    await sendOrderConfirmationEmail({
+      to: order.shipping.email,
+
+      customerName:
+        order.shipping.fullName,
+
+      orderNumber:
+        order.orderNumber,
+
+      paymentMethod:
+        "Cash on Delivery",
+
+      subtotal:
+        order.subtotal,
+
+      couponDiscount:
+        order.couponDiscount,
+
+      shippingAmount:
+        order.shippingAmount,
+
+      taxAmount:
+        order.taxAmount,
+
+      total:
+        order.total,
+
+      shippingAddress:
+        order.shipping,
+
+      items:
+        order.items,
+    });
+  } catch (emailError) {
+    console.error(
+      "ORDER_CONFIRMATION_EMAIL_ERROR:",
+      emailError,
+    );
+
+    /*
+     * IMPORTANT:
+     *
+     * The order already exists.
+     * Email failure must NOT make checkout
+     * report that the order failed.
+     */
+  }
+}
 
     return {
       success: true,

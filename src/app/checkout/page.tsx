@@ -182,34 +182,33 @@ export default async function CheckoutPage() {
           "
         >
           {/* LEFT */}
-          <CheckoutOptions
-            customerName={
-              session.user.name ?? ""
-            }
-            addresses={addresses.map(
-              (address) => ({
-                id: address.id,
-                fullName:
-                  address.fullName,
-                phone:
-                  address.phone,
-                addressLine1:
-                  address.addressLine1,
-                addressLine2:
-                  address.addressLine2,
-                city:
-                  address.city,
-                state:
-                  address.state,
-                postalCode:
-                  address.postalCode,
-                country:
-                  address.country,
-                isDefault:
-                  address.isDefault,
-              }),
-            )}
-          />
+    <CheckoutOptions
+  customerName={
+    session.user.name ?? ""
+  }
+  customerEmail={
+    session.user.email ?? ""
+  }
+  addresses={addresses.map(
+    (address) => ({
+      id: address.id,
+      fullName: address.fullName,
+      email: address.email,
+      phone: address.phone,
+      addressLine1:
+        address.addressLine1,
+      addressLine2:
+        address.addressLine2,
+      city: address.city,
+      state: address.state,
+      postalCode:
+        address.postalCode,
+      country: address.country,
+      isDefault:
+        address.isDefault,
+    }),
+  )}
+/>
 
           {/* RIGHT */}
           <aside

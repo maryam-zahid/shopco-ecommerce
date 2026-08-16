@@ -52,26 +52,32 @@ export async function createCustomerAddress(
 
     return tx.address.create({
       data: {
-        userId,
+  userId,
 
-        fullName: data.fullName,
-        phone: data.phone,
+  fullName: data.fullName,
+  email: data.email,
+  phone: data.phone,
 
-        addressLine1: data.addressLine1,
+  addressLine1:
+    data.addressLine1,
 
-        addressLine2:
-          data.addressLine2 || null,
+  addressLine2:
+    data.addressLine2 || null,
 
-        city: data.city,
+  city: data.city,
 
-        state:
-          data.state || null,
+  state:
+    data.state || null,
 
-        postalCode: data.postalCode,
-        country: data.country,
+  postalCode:
+    data.postalCode,
 
-        isDefault: shouldBeDefault,
-      },
+  country:
+    data.country,
+
+  isDefault:
+    shouldBeDefault,
+},
     });
   });
 }

@@ -7,6 +7,12 @@ export const addressSchema = z.object({
     .min(2, "Please enter your full name.")
     .max(100),
 
+    email: z
+  .string()
+  .trim()
+  .email(
+    "Please enter a valid email address.",
+  ),
   phone: z
     .string()
     .trim()

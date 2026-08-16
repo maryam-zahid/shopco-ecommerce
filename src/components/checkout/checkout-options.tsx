@@ -25,7 +25,8 @@ import CheckoutAddressForm from "@/components/checkout/checkout-address-form";
 type AddressOption = {
   id: string;
   fullName: string;
-  phone: string;
+    email: string | null;
+    phone: string;
   addressLine1: string;
   addressLine2: string | null;
   city: string;
@@ -38,11 +39,13 @@ type AddressOption = {
 type CheckoutOptionsProps = {
   addresses: AddressOption[];
   customerName: string;
+  customerEmail: string;
 };
 
 export default function CheckoutOptions({
   addresses,
   customerName,
+  customerEmail,
 }: CheckoutOptionsProps) {
   const defaultAddress =
     addresses.find((address) => address.isDefault) ??
@@ -458,6 +461,9 @@ className="
       </p>
 
       <p>{address.country}</p>
+      {address.email && (
+  <p>{address.email}</p>
+)}
 
       <p className="mt-[2px]">
         {address.phone}
@@ -607,8 +613,9 @@ className="
           {(showAddressForm ||
             addresses.length === 0) && (
             <CheckoutAddressForm
-              customerName={customerName}
-            />
+  customerName={customerName}
+  customerEmail={customerEmail}
+/>
           )}
         </section>
 
