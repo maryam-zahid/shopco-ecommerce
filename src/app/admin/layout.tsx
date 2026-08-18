@@ -87,14 +87,34 @@ export default async function AdminLayout({
           <SidebarInset>
             <AdminHeader />
 
-            <main
-              className="
-                min-h-[calc(100vh-52px)]
-                bg-muted/30
-              "
-            >
-              {children}
-            </main>
+           <main
+  className="
+    min-h-[calc(100vh-52px)]
+    bg-muted/30
+
+    px-[16px]
+    py-[20px]
+
+    min-[800px]:px-[24px]
+    min-[800px]:py-[24px]
+
+    min-[1200px]:px-[30px]
+    min-[1200px]:py-[28px]
+
+    min-[1920px]:px-[36px]
+    min-[1920px]:py-[32px]
+  "
+>
+  <div
+    className="
+      mx-auto
+      w-full
+      max-w-[1600px]
+    "
+  >
+    {children}
+  </div>
+</main>
           </SidebarInset>
         </div>
       </SidebarProvider>

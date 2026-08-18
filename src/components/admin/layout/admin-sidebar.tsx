@@ -8,7 +8,6 @@ import {
   CreditCard,
   LayoutDashboard,
   Package,
-  Settings,
   Shirt,
   ShoppingCart,
   Star,
@@ -20,7 +19,6 @@ import {
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -47,27 +45,21 @@ const dashboardItems: NavItem[] = [
 
 const catalogItems: NavItem[] = [
   {
-    title: "Products",
+    title: "Product List",
     href: "/admin/products",
     icon: Package,
   },
   {
-    title: "Categories",
-    href: "/admin/categories",
-    icon: Tags,
+    title: "Product Detail",
+    href: "/admin/products/detail",
+    icon: Package,
   },
   {
-    title: "Dress Styles",
-    href: "/admin/dress-styles",
-    icon: Shirt,
-  },
-  {
-    title: "Inventory",
-    href: "/admin/inventory",
-    icon: Boxes,
+    title: "Add Product",
+    href: "/admin/products/new",
+    icon: Package,
   },
 ];
-
 const salesItems: NavItem[] = [
   {
     title: "Orders",
@@ -106,11 +98,23 @@ function AdminNavItem({
 }) {
   const pathname = usePathname();
 
-  const isActive =
-    item.href === "/admin"
-      ? pathname === "/admin"
-      : pathname.startsWith(item.href);
+const isProductDynamicDetail =
+  item.href === "/admin/products/detail" &&
+  pathname.startsWith("/admin/products/") &&
+  pathname !== "/admin/products/new" &&
+  pathname !== "/admin/products/detail" &&
+  !pathname.endsWith("/edit");
 
+const isActive =
+  item.href === "/admin"
+    ? pathname === "/admin"
+    : item.href === "/admin/products"
+      ? pathname === "/admin/products"
+      : isProductDynamicDetail ||
+        pathname === item.href ||
+        pathname.startsWith(
+          `${item.href}/`,
+        );
   const Icon = item.icon;
 
   return (
@@ -240,23 +244,6 @@ export default function AdminSidebar() {
         />
       </SidebarContent>
 
-      {/* FOOTER */}
-      <SidebarFooter className="border-t p-2">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              tooltip="Settings"
-              render={
-                <Link href="/admin/settings" />
-              }
-            >
-              <Settings className="size-4" />
-
-              <span>Settings</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
 
       <SidebarRail />
     </Sidebar>
