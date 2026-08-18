@@ -142,8 +142,7 @@ export default function ProductCard({
           ${product.price}
         </span>
 
-        {product.originalPrice && (
-          <span
+{product.originalPrice !== undefined && (          <span
             className="
               whitespace-nowrap
               text-[20px]
@@ -165,8 +164,9 @@ export default function ProductCard({
           </span>
         )}
 
-        {product.discount && (
-          <span
+{product.discount !== undefined &&
+  product.discount > 0 && (
+              <span
             className="
               flex
               h-[20px]

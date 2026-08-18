@@ -1,10 +1,10 @@
 "use client";
 
 import {
-  LogIn,
   LogOut,
+  Package,
   ShieldCheck,
-  UserRound,
+ 
 } from "lucide-react";
 
 import Link from "next/link";
@@ -157,27 +157,34 @@ export default function AccountMenu() {
             </p>
           </div>
 
-          {!isAdmin && (
-            <Link
-              href="/account"
-              onClick={() => setOpen(false)}
-              className="
-                flex
-                items-center
-                gap-[10px]
-                px-[14px]
-                py-[10px]
-                text-[14px]
-                text-black
-                hover:bg-[#F0F0F0]
-              "
-            >
-              <UserRound className="size-[17px]" />
+  {!isAdmin && (
+  <Link
+    href="/account/orders"
+    onClick={() => setOpen(false)}
+    className="
+      flex
+      items-center
+      gap-[10px]
 
-              My Account
-            </Link>
-          )}
+      px-[14px]
+      py-[10px]
 
+      text-[14px]
+      text-black
+
+      no-underline
+
+      hover:bg-[#F0F0F0]
+    "
+    style={{
+      fontFamily: "var(--font-satoshi)",
+    }}
+  >
+    <Package className="size-[17px] shrink-0" />
+
+    <span>My Orders</span>
+  </Link>
+)}
           {isAdmin && (
             <Link
               href="/admin"

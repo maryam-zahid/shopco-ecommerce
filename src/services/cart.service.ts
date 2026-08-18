@@ -442,3 +442,198 @@ export async function mergeGuestCartIntoCustomer(
 
   cookieStore.delete(GUEST_CART_COOKIE);
 }
+export async function applyCouponToCart(
+  codeInput: string,
+) {
+  const code =
+    codeInput.trim().toUpperCase();
+
+  if (!code) {
+    throw new Error(
+      "Please enter a coupon code.",
+    );
+  }
+
+  const cart =
+    await getCurrentCart();
+
+  if (
+    !cart ||
+    cart.items.length === 0
+  ) {
+    throw new Error(
+      "Your cart is empty.",
+    );
+  }
+
+  const coupon =
+    await prisma.coupon.findUnique({
+      where: {
+        code,
+      },
+    });
+
+  if (!coupon) {
+    throw new Error(
+      "Invalid coupon code.",
+    );
+  }
+
+  const now = new Date();
+
+  if (!coupon.isActive) {
+    throw new Error(
+      "This coupon is currently inactive.",
+    );
+  }
+
+  if (
+    coupon.startsAt &&
+    coupon.startsAt > now
+  ) {
+    throw new Error(
+      "This coupon is not active yet.",
+    );
+  }
+
+  if (
+    coupon.expiresAt &&
+    coupon.expiresAt < now
+  ) {
+    throw new Error(
+      "This coupon has expired.",
+    );
+  }
+
+  if (
+    coupon.usageLimit !== null &&
+    coupon.usedCount >=
+      coupon.usageLimit
+  ) {
+    throw new Error(
+      "This coupon has reached its usage limit.",
+    );
+  }
+
+  let subtotal = 0;
+
+  for (const item of cart.items) {
+    const product =
+      item.variant.product;
+
+    const productPrice =
+      product.discountPrice !== null
+        ? Number(
+            product.discountPrice,
+          )
+        : Number(
+            product.price,
+          );
+
+    const unitPrice =
+      item.variant.priceOverride !==
+      null
+        ? Number(
+            item.variant.priceOverride,
+          )
+        : productPrice;
+
+    subtotal +=
+      unitPrice * item.quantity;
+  }
+
+  if (
+    coupon.minimumOrderAmount !==
+      null &&
+    subtotal <
+      Number(
+        coupon.minimumOrderAmount,
+      )
+  ) {
+    throw new Error(
+      `This coupon requires a minimum order of $${Number(
+        coupon.minimumOrderAmount,
+      ).toFixed(2)}.`,
+    );
+  }
+
+  await prisma.cart.update({
+    where: {
+      id: cart.id,
+    },
+
+    data: {
+      couponId:
+        coupon.id,
+    },
+  });
+
+  let discount = 0;
+
+  if (
+    coupon.discountType ===
+    "PERCENTAGE"
+  ) {
+    discount =
+      subtotal *
+      (Number(
+        coupon.discountValue,
+      ) /
+        100);
+  } else {
+    discount =
+      Number(
+        coupon.discountValue,
+      );
+  }
+
+  discount = Math.min(
+    discount,
+    subtotal,
+  );
+
+  return {
+    code:
+      coupon.code,
+
+    discountType:
+      coupon.discountType,
+
+    discountValue:
+      Number(
+        coupon.discountValue,
+      ),
+
+    discount,
+
+    subtotal,
+
+    totalAfterDiscount:
+      subtotal - discount,
+  };
+}
+
+export async function removeCouponFromCart() {
+  const cart =
+    await getCurrentCart();
+
+  if (!cart) {
+    throw new Error(
+      "Cart not found.",
+    );
+  }
+
+  await prisma.cart.update({
+    where: {
+      id: cart.id,
+    },
+
+    data: {
+      couponId: null,
+    },
+  });
+
+  return {
+    removed: true,
+  };
+}

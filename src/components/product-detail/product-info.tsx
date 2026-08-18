@@ -83,44 +83,7 @@ function increaseQuantity() {
     );
   });
 }
-// function handleAddToCart() {
-//   setMessage(null);
-//   setIsError(false);
 
-//   if (!selectedVariant) {
-//     setIsError(true);
-//     setMessage(
-//       "This color and size combination is unavailable.",
-//     );
-//     return;
-//   }
-
-//   if (!selectedVariant.isActive) {
-//     setIsError(true);
-//     setMessage(
-//       "This product option is currently unavailable.",
-//     );
-//     return;
-//   }
-
-//   if (selectedVariant.stock <= 0) {
-//     setIsError(true);
-//     setMessage(
-//       "This product option is out of stock.",
-//     );
-//     return;
-//   }
-
-//   startTransition(async () => {
-//     const result = await addToCartAction({
-//       variantId: selectedVariant.id,
-//       quantity,
-//     });
-
-//     setIsError(!result.success);
-//     setMessage(result.message);
-//   });
-// }
 function handleAddToCart() {
   setMessage(null);
   setIsError(false);
@@ -177,20 +140,26 @@ function handleAddToCart() {
     return;
   }
 
-  startTransition(async () => {
-    const result = await addToCartAction({
-      variantId: selectedVariant.id,
-      quantity,
-    });
-
-    setIsError(!result.success);
-
-    setMessage(
-      result.success
-        ? "Product added to cart successfully."
-        : result.message,
-    );
+ startTransition(async () => {
+  const result = await addToCartAction({
+    variantId: selectedVariant.id,
+    quantity,
   });
+
+  setIsError(!result.success);
+
+  setMessage(
+    result.success
+      ? "Product added to cart successfully."
+      : result.message,
+  );
+
+  if (result.success) {
+    window.dispatchEvent(
+      new Event("cart-updated"),
+    );
+  }
+});
 }
 
   return (
@@ -337,47 +306,7 @@ function handleAddToCart() {
     />
   </div>
 )}
-      {message && (
-  <div
-    className={`
-      fixed
-      left-1/2
-      top-[24px]
-      z-[9999]
-
-      flex
-      min-h-[52px]
-w-[calc(100%_-_32px)]
-      max-w-[420px]
-      -translate-x-1/2
-      items-center
-      justify-center
-
-      rounded-[12px]
-      px-[20px]
-      py-[14px]
-
-      text-center
-      text-[15px]
-      leading-[21px]
-      font-medium
-      text-white
-
-      shadow-[0_12px_35px_rgba(0,0,0,0.22)]
-
-      ${
-        isError
-          ? "bg-[#DC2626]"
-          : "bg-black"
-      }
-    `}
-    style={{
-      fontFamily: "var(--font-satoshi)",
-    }}
-  >
-    {message}
-  </div>
-)}
+     
       {/* =================================================
           TITLE
       ================================================== */}
@@ -605,8 +534,12 @@ w-[calc(100%_-_32px)]
         key={color.name}
         type="button"
         aria-label={color.name}
-        onClick={() => setSelectedColor(index)}
-        className="
+onClick={() => {
+  setSelectedColor(index);
+  setSelectedSize("");
+  setQuantity(1);
+  setMessage(null);
+}}        className="
           flex
           h-[37px]
           w-[37px]
@@ -688,66 +621,88 @@ w-[calc(100%_-_32px)]
     "
   >
     {product.sizes.map((size) => {
-      const selected = selectedSize === size;
+  const selected = selectedSize === size;
 
-      return (
-        <button
-          key={size}
-          type="button"
-          // onClick={() => setSelectedSize(size)}
-       onClick={() => {
-  setSelectedSize(size);
-  setQuantity(1);
-  setMessage(null);
-}}
-          className={`
-            flex
-            h-[42px]
-            min-w-0
-            flex-1
-            items-center
-            justify-center
-            whitespace-nowrap
-            rounded-[62px]
+  const sizeVariant =
+    selectedColorName
+      ? product.variants.find(
+          (variant) =>
+            variant.colorName === selectedColorName &&
+            variant.size === size,
+        )
+      : undefined;
 
-            !border-0
-            !outline-none
+  const unavailable =
+    selectedColorName !== undefined &&
+    (!sizeVariant ||
+      !sizeVariant.isActive ||
+      sizeVariant.stock <= 0);
 
-            text-[14px]
-            leading-[20px]
+  return (
+    <button
+      key={size}
+      type="button"
+      disabled={unavailable}
+      onClick={() => {
+        if (unavailable) return;
 
-            min-[1200px]:h-[46px]
-            min-[1200px]:flex-none
-            min-[1200px]:text-[16px]
-            min-[1200px]:leading-[22px]
+        setSelectedSize(size);
+        setQuantity(1);
+        setMessage(null);
+      }}
+      className={`
+        flex
+        h-[42px]
+        min-w-0
+        flex-1
+        items-center
+        justify-center
+        whitespace-nowrap
+        rounded-[62px]
 
-            ${
-              size === "Small"
+        !border-0
+        !outline-none
+
+        text-[14px]
+        leading-[20px]
+
+        transition-all
+        duration-200
+
+        min-[1200px]:h-[46px]
+        min-[1200px]:flex-none
+        min-[1200px]:text-[16px]
+        min-[1200px]:leading-[22px]
+
+        ${
+          size === "Small"
+            ? "min-[1200px]:w-[86px]"
+            : size === "Medium"
+              ? "min-[1200px]:w-[105px]"
+              : size === "Large"
                 ? "min-[1200px]:w-[86px]"
-                : size === "Medium"
-                  ? "min-[1200px]:w-[105px]"
-                  : size === "Large"
-                    ? "min-[1200px]:w-[86px]"
-                    : "min-[1200px]:w-[107px]"
-            }
+                : "min-[1200px]:w-[107px]"
+        }
 
-            ${
-              selected
-                ? "!bg-black !text-white"
-                : "!bg-[#F0F0F0] !text-black/60"
-            }
-          `}
-          style={{
-            fontFamily: "var(--font-satoshi)",
-            fontWeight: 400,
-            border: "none",
-            outline: "none",
-          }}
-        >
-          {size}
-        </button>
-      );
-    })}
+        ${
+          selected
+            ? "!bg-black !text-white"
+            : unavailable
+              ? "!bg-[#F0F0F0] !text-black/25 line-through cursor-not-allowed"
+              : "!bg-[#F0F0F0] !text-black/60 hover:!bg-black/10"
+        }
+      `}
+      style={{
+        fontFamily: "var(--font-satoshi)",
+        fontWeight: 400,
+        border: "none",
+        outline: "none",
+      }}
+    >
+      {size}
+    </button>
+  );
+})}
   </div>
 </div>
 

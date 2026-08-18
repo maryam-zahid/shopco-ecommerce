@@ -160,62 +160,62 @@ export async function getActiveProducts(
             createdAt: "desc" as const,
           };
 
-  const [products, total] =
-    await prisma.$transaction([
-      prisma.product.findMany({
-        where,
+const [products, total] =
+  await Promise.all([
+    prisma.product.findMany({
+      where,
 
-        orderBy,
+      orderBy,
 
-        skip,
-        take: safePageSize,
+      skip,
+      take: safePageSize,
 
-        include: {
-          category: {
-            select: {
-              id: true,
-              name: true,
-              slug: true,
-            },
-          },
-
-          dressStyle: {
-            select: {
-              id: true,
-              name: true,
-              slug: true,
-            },
-          },
-
-          variants: {
-            where: {
-              isActive: true,
-            },
-
-            select: {
-              id: true,
-              sku: true,
-              colorName: true,
-              colorValue: true,
-              size: true,
-              stock: true,
-              priceOverride: true,
-              isActive: true,
-            },
-          },
-
-          _count: {
-            select: {
-              reviews: true,
-            },
+      include: {
+        category: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
           },
         },
-      }),
 
-      prisma.product.count({
-        where,
-      }),
-    ]);
+        dressStyle: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
+
+        variants: {
+          where: {
+            isActive: true,
+          },
+
+          select: {
+            id: true,
+            sku: true,
+            colorName: true,
+            colorValue: true,
+            size: true,
+            stock: true,
+            priceOverride: true,
+            isActive: true,
+          },
+        },
+
+        _count: {
+          select: {
+            reviews: true,
+          },
+        },
+      },
+    }),
+
+    prisma.product.count({
+      where,
+    }),
+  ]);
 
   return {
     products,
@@ -378,6 +378,64 @@ export async function getFeaturedProducts(
       _count: {
         select: {
           reviews: true,
+        },
+      },
+    },
+  });
+}
+
+export async function getTopSellingProducts(
+  limit = 4,
+) {
+  return prisma.product.findMany({
+    where: {
+      status: "ACTIVE",
+
+      category: {
+        isActive: true,
+      },
+
+      variants: {
+        some: {
+          isActive: true,
+          stock: {
+            gt: 0,
+          },
+        },
+      },
+    },
+
+    orderBy: [
+      {
+        orderItems: {
+          _count: "desc",
+        },
+      },
+      {
+        createdAt: "desc",
+      },
+    ],
+
+    take: limit,
+
+    include: {
+      variants: {
+        where: {
+          isActive: true,
+        },
+
+        select: {
+          stock: true,
+        },
+      },
+
+      reviews: {
+        where: {
+          isVisible: true,
+        },
+
+        select: {
+          rating: true,
         },
       },
     },

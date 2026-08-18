@@ -305,7 +305,7 @@ export default async function NewArrivalsSection() {
           "
         >
           <Link
-            href="/category"
+href="/category/new-arrivals"
             className="
               flex
               h-[46px]

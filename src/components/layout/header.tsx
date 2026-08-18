@@ -2,8 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { FormEvent, useState } from "react";
-import AccountMenu from "@/components/layout/account-menu";
+import {
+  FormEvent,
+  useEffect,
+  useState,
+} from "react";import AccountMenu from "@/components/layout/account-menu";
 /* =========================================================
    ICONS
 ========================================================= */
@@ -178,8 +181,66 @@ export default function Header() {
   const [announcementVisible, setAnnouncementVisible] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  
   const [shopOpen, setShopOpen] = useState(false);
+const [cartCount, setCartCount] =
+  useState(0);
+  useEffect(() => {
+  async function loadCartCount() {
+    try {
+      const response =
+        await fetch(
+          "/api/cart/count",
+          {
+            cache: "no-store",
+          },
+        );
 
+      if (!response.ok) {
+        return;
+      }
+
+      const data =
+        (await response.json()) as {
+          count: number;
+        };
+
+      setCartCount(
+        data.count ?? 0,
+      );
+    } catch {
+      setCartCount(0);
+    }
+  }
+
+  void loadCartCount();
+
+  function handleCartUpdated() {
+    void loadCartCount();
+  }
+
+  window.addEventListener(
+    "cart-updated",
+    handleCartUpdated,
+  );
+
+  window.addEventListener(
+    "focus",
+    handleCartUpdated,
+  );
+
+  return () => {
+    window.removeEventListener(
+      "cart-updated",
+      handleCartUpdated,
+    );
+
+    window.removeEventListener(
+      "focus",
+      handleCartUpdated,
+    );
+  };
+}, []);
   function handleSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -334,17 +395,7 @@ export default function Header() {
               setMobileMenuOpen((previous) => !previous);
               setMobileSearchOpen(false);
             }}
-            // className="
-            //   flex
-            //   h-[24px]
-            //   w-[24px]
-            //   shrink-0
-            //   items-center
-            //   justify-center
-            //   text-black
-
-            //   min-[800px]:hidden
-            // "
+          
             className="
   mr-[20px]
   flex
@@ -491,7 +542,12 @@ export default function Header() {
                   >
                     Women
                   </Link>
-
+<Link
+  href="/category/kids"
+  className="block px-[16px] py-[10px] hover:bg-[#F0F0F0]"
+>
+  Kids
+</Link>
                   <Link
                     href="/category/casual"
                     className="block px-[16px] py-[10px] hover:bg-[#F0F0F0]"
@@ -666,18 +722,62 @@ export default function Header() {
 
             {/* CART */}
 
-        <Link
+      <Link
   href="/cart"
-  aria-label="Open cart"
+  aria-label={
+    cartCount > 0
+      ? `Open cart with ${cartCount} items`
+      : "Open cart"
+  }
   className="
+    relative
+
     flex
+    h-[28px]
+    w-[28px]
     items-center
     justify-center
+
     text-black
     no-underline
   "
 >
   <CartIcon />
+
+  {cartCount > 0 && (
+    <span
+      className="
+        absolute
+        -right-[7px]
+        -top-[7px]
+
+        flex
+        h-[17px]
+        min-w-[17px]
+        items-center
+        justify-center
+
+        rounded-full
+
+        px-[4px]
+
+        text-[9px]
+        font-bold
+        leading-none
+      "
+      style={{
+        backgroundColor:
+          "#FF3333",
+        color: "#FFFFFF",
+        border:
+          "1.5px solid #FFFFFF",
+      }}
+    >
+      {cartCount > 99
+        ? "99+"
+        : cartCount}
+    </span>
+  )}
 </Link>
             {/* USER */}
 

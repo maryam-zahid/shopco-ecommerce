@@ -45,5 +45,32 @@ export default async function Page() {
       };
     }) ?? [];
 
-  return <CartPage initialItems={items} />;
+  return <CartPage initialItems={items}
+  initialCoupon={
+  cart?.coupon
+    ? {
+        code:
+          cart.coupon.code,
+
+        discountType:
+          cart.coupon.discountType,
+
+        discountValue:
+          Number(
+            cart.coupon
+              .discountValue,
+          ),
+
+        minimumOrderAmount:
+          cart.coupon
+            .minimumOrderAmount !==
+          null
+            ? Number(
+                cart.coupon
+                  .minimumOrderAmount,
+              )
+            : null,
+      }
+    : null
+} />;
 }
