@@ -23,10 +23,10 @@ enum OrderStatus {
   CONFIRMED
   PROCESSING
   SHIPPED
+  OUT_FOR_DELIVERY
   DELIVERED
   CANCELLED
 }
-
 enum PaymentStatus {
   UNPAID
   PENDING
@@ -307,6 +307,7 @@ model Order {
   confirmedAt  DateTime?
   processingAt DateTime?
   shippedAt    DateTime?
+  outForDeliveryAt DateTime?
   deliveredAt  DateTime?
   cancelledAt  DateTime?
 
