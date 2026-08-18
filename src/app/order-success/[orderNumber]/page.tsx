@@ -165,18 +165,61 @@ export default async function OrderSuccessPage({
             value={order.paymentStatus}
           />
 
-          <SummaryRow
-            label="Items"
-            value={String(order.items.length)}
-          />
+         <SummaryRow
+  label="Items"
+  value={String(order.items.length)}
+/>
 
-          <SummaryRow
-            label="Total"
-            value={`$${Number(
-              order.total,
-            ).toFixed(2)}`}
-            last
-          />
+<SummaryRow
+  label="Subtotal"
+  value={`$${Number(
+    order.subtotal,
+  ).toFixed(2)}`}
+/>
+
+{Number(order.productDiscount) > 0 && (
+  <SummaryRow
+    label="Product Discount"
+    value={`-$${Number(
+      order.productDiscount,
+    ).toFixed(2)}`}
+  />
+)}
+
+{Number(order.couponDiscount) > 0 && (
+  <SummaryRow
+    label={
+      order.couponCodeSnapshot
+        ? `Coupon (${order.couponCodeSnapshot})`
+        : "Coupon Discount"
+    }
+    value={`-$${Number(
+      order.couponDiscount,
+    ).toFixed(2)}`}
+  />
+)}
+
+<SummaryRow
+  label="Shipping"
+  value={`$${Number(
+    order.shippingAmount,
+  ).toFixed(2)}`}
+/>
+
+<SummaryRow
+  label="Tax"
+  value={`$${Number(
+    order.taxAmount,
+  ).toFixed(2)}`}
+/>
+
+<SummaryRow
+  label="Total"
+  value={`$${Number(
+    order.total,
+  ).toFixed(2)}`}
+  last
+/>
         </div>
 
         <div

@@ -8,7 +8,9 @@ import {
   Plus,
   X,
 } from "lucide-react";
-
+import {
+  startStripeCheckoutAction,
+} from "@/actions/stripe.actions";
 import {
   useEffect,
   useState,
@@ -84,63 +86,103 @@ export default function CheckoutOptions({
   }, [message]);
 
  function handleContinue() {
-  if (!selectedAddressId) {
-    setIsError(true);
-    setMessage(
-      "Please select or add a shipping address.",
-    );
-    return;
-  }
+if (!selectedAddressId) {
+  setIsError(true);
 
-  startTransition(async () => {
-    setMessage(null);
-    setIsError(false);
+  setMessage(
+    "Please select or add a shipping address.",
+  );
 
-    if (paymentMethod === "COD") {
-      const result =
-        await placeOrderAction({
-          addressId: selectedAddressId,
-          paymentMethod: "COD",
-        });
+  return;
+}
 
-      if (!result.success) {
-        setIsError(true);
-        setMessage(result.message);
-        return;
-      }
+startTransition(async () => {
+  setMessage(null);
+  setIsError(false);
 
-      setIsError(false);
-      setMessage(
-        "Your order has been placed successfully.",
-      );
+  /* =========================================
+     CASH ON DELIVERY
+  ========================================= */
 
-      window.setTimeout(() => {
-        router.push(
-          `/order-success/${result.order.orderNumber}`,
-        );
-        router.refresh();
-      }, 700);
-
-      return;
-    }
-
+  if (paymentMethod === "COD") {
     const result =
-      await validateCheckoutAction({
-        addressId: selectedAddressId,
-        paymentMethod: "CARD",
+      await placeOrderAction({
+        addressId:
+          selectedAddressId,
+
+        paymentMethod:
+          "COD",
       });
 
     if (!result.success) {
       setIsError(true);
-      setMessage(result.message);
+
+      setMessage(
+        result.message,
+      );
+
       return;
     }
 
     setIsError(false);
+
     setMessage(
-      "Checkout verified. Ready to continue to secure card payment.",
+      "Your order has been placed successfully.",
     );
-  });
+
+    window.setTimeout(() => {
+      router.push(
+        `/order-success/${result.order.orderNumber}`,
+      );
+
+      router.refresh();
+    }, 700);
+
+    return;
+  }
+
+  /* =========================================
+     STRIPE CARD PAYMENT
+  ========================================= */
+
+  const result =
+    await placeOrderAction({
+      addressId:
+        selectedAddressId,
+
+      paymentMethod:
+        "CARD",
+    });
+
+  if (!result.success) {
+    setIsError(true);
+
+    setMessage(
+      result.message,
+    );
+
+    return;
+  }
+
+  if (!result.checkoutUrl) {
+    setIsError(true);
+
+    setMessage(
+      "Unable to open secure card payment.",
+    );
+
+    return;
+  }
+
+  setIsError(false);
+
+  setMessage(
+    "Redirecting to secure card payment...",
+  );
+
+  window.location.href =
+    result.checkoutUrl;
+});
 }
 
   return (

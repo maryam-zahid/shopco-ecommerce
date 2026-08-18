@@ -350,9 +350,15 @@ export default async function OrderDetailPage({
                   {order.shippingCountry}
                 </p>
 
-                <p className="mt-[4px]">
-                  {order.shippingPhone}
-                </p>
+               {order.shippingEmail && (
+  <p className="mt-[4px]">
+    {order.shippingEmail}
+  </p>
+)}
+
+<p className="mt-[4px]">
+  {order.shippingPhone}
+</p>
               </div>
             </section>
           </div>
@@ -390,12 +396,16 @@ export default async function OrderDetailPage({
                   ).toFixed(2)}`}
                 />
 
-                <SummaryRow
-                  label="Coupon Discount"
-                  value={`-$${Number(
-                    order.couponDiscount,
-                  ).toFixed(2)}`}
-                />
+             <SummaryRow
+  label={
+    order.couponCodeSnapshot
+      ? `Coupon (${order.couponCodeSnapshot})`
+      : "Coupon Discount"
+  }
+  value={`-$${Number(
+    order.couponDiscount,
+  ).toFixed(2)}`}
+/>
 
                 <SummaryRow
                   label="Shipping"

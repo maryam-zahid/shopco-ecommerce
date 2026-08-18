@@ -296,36 +296,124 @@ export default async function MyOrdersPage() {
                       ).toFixed(2)}
                     </span>
                   </div>
-                  <div className="mt-[18px]">
+         <div
+  className="
+    mt-[18px]
+
+    flex
+    flex-col
+    gap-[14px]
+  "
+>
+  {/* DELIVERY PROGRESS */}
+
+  {order.status !== "CANCELLED" && (
+    <div>
+      <div
+        className="
+          flex
+          items-center
+          justify-between
+
+          text-[10px]
+          font-medium
+          text-black/45
+        "
+      >
+        <span>Processing</span>
+        <span>Shipped</span>
+        <span>Out for Delivery</span>
+        <span>Delivered</span>
+      </div>
+
+      <div
+        className="
+          relative
+
+          mt-[8px]
+
+          h-[6px]
+          w-full
+
+          overflow-hidden
+
+          rounded-full
+
+          bg-black/10
+        "
+      >
+        <div
+          className="
+            absolute
+            inset-y-0
+            left-0
+
+            rounded-full
+
+            bg-black
+
+            transition-all
+            duration-500
+          "
+          style={{
+            width:
+              order.status === "DELIVERED"
+                ? "100%"
+                : order.status === "OUT_FOR_DELIVERY"
+                  ? "75%"
+                  : order.status === "SHIPPED"
+                    ? "50%"
+                    : order.status === "CONFIRMED" ||
+                        order.status === "PROCESSING"
+                      ? "25%"
+                      : "0%",
+          }}
+        />
+      </div>
+    </div>
+  )}
+
+  {/* VIEW DETAILS */}
+
   <Link
     href={`/account/orders/${order.orderNumber}`}
     className="
-      flex
-      h-[44px]
+      inline-flex
+      min-h-[44px]
       w-full
       items-center
       justify-center
 
-      rounded-full
+      rounded-[62px]
 
-      border
-      border-black
-
-      bg-black
-
-      px-[18px]
+      px-[20px]
+      py-[11px]
 
       text-[13px]
       font-medium
-      text-white
+      leading-[18px]
+
+      no-underline
+
+      transition-opacity
+      duration-200
+
+      hover:opacity-85
     "
     style={{
       backgroundColor: "#000000",
+      border: "1px solid #000000",
       color: "#FFFFFF",
       fontFamily: "var(--font-satoshi)",
     }}
   >
-    View Order Details
+    <span
+      style={{
+        color: "#FFFFFF",
+      }}
+    >
+      View Order Details
+    </span>
   </Link>
 </div>
                 </div>

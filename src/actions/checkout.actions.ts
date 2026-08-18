@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 
 import {
   createCodOrder,
+  createStripeCheckout,
   validateCheckout,
 } from "@/services/checkout.service";
 import {
@@ -119,10 +120,12 @@ type PlaceOrderResult =
       message: string;
 
       order: {
-        id: string;
-        orderNumber: string;
-        total: number;
+        id?: string;
+        orderNumber?: string;
+        total?: number;
       };
+
+      checkoutUrl?: string;
     }
   | {
       success: false;
@@ -175,16 +178,49 @@ export async function placeOrderAction(
    */
 
   if (
-    parsed.data.paymentMethod ===
-    "CARD"
-  ) {
+  parsed.data.paymentMethod ===
+  "CARD"
+) {
+  try {
+    const stripeCheckout =
+      await createStripeCheckout(
+        session.user.id,
+        parsed.data,
+      );
+
+    return {
+      success: true,
+
+      message:
+        "Redirecting to secure card payment.",
+
+      order: {
+        id:
+          stripeCheckout.orderId,
+
+        orderNumber:
+          stripeCheckout.orderNumber,
+      },
+
+      checkoutUrl:
+        stripeCheckout.checkoutUrl,
+    };
+  } catch (error) {
+    console.error(
+      "STRIPE_CHECKOUT_ERROR:",
+      error,
+    );
+
     return {
       success: false,
 
       message:
-        "Card payment will be available through Stripe checkout.",
+        error instanceof Error
+          ? error.message
+          : "Unable to start card payment.",
     };
   }
+}
 
   try {
     const order =

@@ -94,18 +94,42 @@ export default async function CheckoutPage() {
       0,
     );
 
-  const discount = 0;
+  let discount = 0;
 
-  const deliveryFee = 15;
+if (cart.coupon) {
+  if (
+    cart.coupon.discountType ===
+    "PERCENTAGE"
+  ) {
+    discount =
+      subtotal *
+      (Number(
+        cart.coupon.discountValue,
+      ) /
+        100);
+  } else {
+    discount =
+      Number(
+        cart.coupon.discountValue,
+      );
+  }
 
-  const tax = 0;
+  // Coupon discount must never exceed subtotal.
+  discount = Math.min(
+    discount,
+    subtotal,
+  );
+}
 
-  const total =
-    subtotal -
-    discount +
-    deliveryFee +
-    tax;
+const deliveryFee = 15;
 
+const tax = 0;
+
+const total =
+  subtotal -
+  discount +
+  deliveryFee +
+  tax;
   return (
     <main className="w-full bg-white">
       <section
@@ -313,9 +337,72 @@ export default async function CheckoutPage() {
               )}
             </div>
 
-            <div className="my-[20px] h-px bg-black/10" />
+          <div className="my-[20px] h-px bg-black/10" />
 
-            {/* PRICES */}
+{/* APPLIED COUPON */}
+{cart.coupon && (
+  <div
+    className="
+      mb-[18px]
+
+      flex
+      items-center
+      justify-between
+      gap-[12px]
+
+      rounded-[10px]
+
+      border
+      border-green-200
+
+      bg-green-50
+
+      px-[14px]
+      py-[11px]
+    "
+  >
+    <div>
+      <p
+        className="
+          text-[12px]
+          font-semibold
+          text-green-800
+        "
+      >
+        Coupon Applied
+      </p>
+
+      <p
+        className="
+          mt-[2px]
+          text-[11px]
+          text-green-700
+        "
+      >
+        {cart.coupon.code}
+      </p>
+    </div>
+
+    <span
+      className="
+        text-[13px]
+        font-semibold
+        text-green-800
+      "
+    >
+      {cart.coupon.discountType ===
+      "PERCENTAGE"
+        ? `${Number(
+            cart.coupon.discountValue,
+          )}% OFF`
+        : `$${Number(
+            cart.coupon.discountValue,
+          ).toFixed(2)} OFF`}
+    </span>
+  </div>
+)}
+
+{/* PRICES */}
             <div className="space-y-[14px]">
               <SummaryRow
                 label="Subtotal"
@@ -325,12 +412,16 @@ export default async function CheckoutPage() {
               />
 
               <SummaryRow
-                label="Discount"
-                value={`-$${discount.toFixed(
-                  2,
-                )}`}
-                discount
-              />
+  label={
+    cart.coupon
+      ? `Discount (${cart.coupon.code})`
+      : "Discount"
+  }
+  value={`-$${discount.toFixed(
+    2,
+  )}`}
+  discount
+/>
 
               <SummaryRow
                 label="Delivery Fee"

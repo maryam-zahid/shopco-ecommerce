@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import type {
   CheckoutSelectionInput,
 } from "@/validations/checkout.schema";
-
+import { stripe } from "@/lib/stripe";
 export async function validateCheckout(
   userId: string,
   input: CheckoutSelectionInput,
@@ -195,18 +195,393 @@ export async function validateCheckout(
     total,
   };
 }
-export async function createCodOrder(
+export async function createStripeCheckout(
   userId: string,
   input: CheckoutSelectionInput,
 ) {
-  if (input.paymentMethod !== "COD") {
+  if (input.paymentMethod !== "CARD") {
     throw new Error(
-      "This checkout flow only supports Cash on Delivery.",
+      "This checkout flow only supports card payments.",
+    );
+  }
+
+  const checkout =
+    await validateCheckout(
+      userId,
+      input,
+    );
+
+  const {
+    cart,
+    address,
+    subtotal,
+    couponDiscount,
+    shippingAmount,
+    taxAmount,
+    total,
+  } = checkout;
+
+  const orderItems =
+    cart.items.map((item) => {
+      const variant =
+        item.variant;
+
+      const product =
+        variant.product;
+
+      const basePrice =
+        Number(product.price);
+
+      const productPrice =
+        product.discountPrice !==
+        null
+          ? Number(
+              product.discountPrice,
+            )
+          : basePrice;
+
+      const unitPrice =
+        variant.priceOverride !==
+        null
+          ? Number(
+              variant.priceOverride,
+            )
+          : productPrice;
+
+      return {
+        productId:
+          product.id,
+
+        variantId:
+          variant.id,
+
+        productName:
+          product.name,
+
+        productImage:
+          product.images[0] ??
+          null,
+
+        colorName:
+          variant.colorName,
+
+        size:
+          variant.size,
+
+        unitPrice,
+
+        quantity:
+          item.quantity,
+
+        subtotal:
+          unitPrice *
+          item.quantity,
+      };
+    });
+
+  const orderNumber =
+    `SHOP-${Date.now()}-${crypto
+      .randomUUID()
+      .slice(0, 6)
+      .toUpperCase()}`;
+
+  const order =
+    await prisma.order.create({
+      data: {
+        orderNumber,
+
+        userId,
+
+        status: "PENDING",
+
+        paymentStatus:
+          "PENDING",
+
+        paymentMethod:
+          "CARD",
+
+        subtotal,
+
+        productDiscount: 0,
+
+        couponDiscount,
+
+        shippingAmount,
+
+        taxAmount,
+
+        total,
+
+        couponId:
+          cart.coupon?.id ??
+          null,
+
+        couponCodeSnapshot:
+          cart.coupon?.code ??
+          null,
+
+        shippingFullName:
+          address.fullName,
+
+        shippingEmail:
+          address.email,
+
+        shippingPhone:
+          address.phone,
+
+        shippingAddressLine1:
+          address.addressLine1,
+
+        shippingAddressLine2:
+          address.addressLine2,
+
+        shippingCity:
+          address.city,
+
+        shippingState:
+          address.state,
+
+        shippingPostalCode:
+          address.postalCode,
+
+        shippingCountry:
+          address.country,
+
+        items: {
+          create:
+            orderItems.map(
+              (item) => ({
+                productId:
+                  item.productId,
+
+                variantId:
+                  item.variantId,
+
+                productName:
+                  item.productName,
+
+                productImage:
+                  item.productImage,
+
+                colorName:
+                  item.colorName,
+
+                size:
+                  item.size,
+
+                unitPrice:
+                  item.unitPrice,
+
+                quantity:
+                  item.quantity,
+
+                subtotal:
+                  item.subtotal,
+              }),
+            ),
+        },
+
+        paymentAttempts: {
+          create: {
+            customerId:
+              userId,
+
+            attemptNumber: 1,
+
+            provider:
+              "STRIPE",
+
+            amount:
+              total,
+
+            currency:
+              "usd",
+
+            status:
+              "PENDING",
+          },
+        },
+      },
+
+      include: {
+        items: true,
+
+        paymentAttempts: true,
+      },
+    });
+
+  const paymentAttempt =
+    order.paymentAttempts[0];
+
+  if (!paymentAttempt) {
+    throw new Error(
+      "Unable to create payment attempt.",
+    );
+  }
+
+  const appUrl =
+    process.env
+      .NEXT_PUBLIC_APP_URL;
+
+  if (!appUrl) {
+    throw new Error(
+      "NEXT_PUBLIC_APP_URL is missing.",
+    );
+  }
+
+  try {
+    const stripeSession =
+      await stripe.checkout.sessions.create(
+        {
+          mode: "payment",
+
+          success_url:
+            `${appUrl}/order-success/${order.orderNumber}` +
+            "?session_id={CHECKOUT_SESSION_ID}",
+
+          cancel_url:
+            `${appUrl}/checkout?payment=cancelled`,
+
+          customer_email:
+            address.email ??
+            undefined,
+
+          line_items: [
+            {
+              price_data: {
+                currency: "usd",
+
+                product_data: {
+                  name:
+                    `SHOP.CO Order ${order.orderNumber}`,
+                },
+
+                unit_amount:
+                  Math.round(
+                    total * 100,
+                  ),
+              },
+
+              quantity: 1,
+            },
+          ],
+
+          metadata: {
+            orderId:
+              order.id,
+
+            orderNumber:
+              order.orderNumber,
+
+            paymentAttemptId:
+              paymentAttempt.id,
+
+            userId,
+          },
+
+          payment_intent_data: {
+            metadata: {
+              orderId:
+                order.id,
+
+              orderNumber:
+                order.orderNumber,
+
+              paymentAttemptId:
+                paymentAttempt.id,
+
+              userId,
+            },
+          },
+        },
+      );
+
+    if (!stripeSession.url) {
+      throw new Error(
+        "Stripe did not return a checkout URL.",
+      );
+    }
+
+    await prisma.paymentAttempt.update({
+      where: {
+        id: paymentAttempt.id,
+      },
+
+      data: {
+        stripeCheckoutSessionId:
+          stripeSession.id,
+      },
+    });
+
+    return {
+      orderId:
+        order.id,
+
+      orderNumber:
+        order.orderNumber,
+
+      paymentAttemptId:
+        paymentAttempt.id,
+
+      checkoutUrl:
+        stripeSession.url,
+    };
+  } catch (error) {
+    await prisma.paymentAttempt.update({
+      where: {
+        id: paymentAttempt.id,
+      },
+
+      data: {
+        status: "FAILED",
+
+        failureMessage:
+          error instanceof Error
+            ? error.message
+            : "Stripe checkout session creation failed.",
+      },
+    });
+
+    await prisma.order.update({
+      where: {
+        id: order.id,
+      },
+
+      data: {
+        paymentStatus:
+          "FAILED",
+      },
+    });
+
+    throw error;
+  }
+}
+export async function createCodOrder(
+  userId: string,
+  input: {
+    addressId: string;
+  },
+) {
+  const user =
+    await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+
+      select: {
+        email: true,
+      },
+    });
+
+  if (!user) {
+    throw new Error(
+      "Customer account not found.",
     );
   }
 
   return prisma.$transaction(
     async (tx) => {
+      // your existing COD code continues here
       /*
        * =====================================================
        * 1. VALIDATE SHIPPING ADDRESS
@@ -559,11 +934,14 @@ export async function createCodOrder(
              * original delivery information.
              */
 
-            shippingFullName:
-              address.fullName,
+          shippingFullName:
+  address.fullName,
 
-            shippingPhone:
-              address.phone,
+shippingEmail:
+  address.email,
+
+shippingPhone:
+  address.phone,
 
             shippingAddressLine1:
               address.addressLine1,
