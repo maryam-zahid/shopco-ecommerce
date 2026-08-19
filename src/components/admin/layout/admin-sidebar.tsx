@@ -26,7 +26,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
 } from "@/components/ui/sidebar";
 
 type NavItem = {
@@ -245,7 +244,6 @@ export default function AdminSidebar() {
       </SidebarContent>
 
 
-      <SidebarRail />
     </Sidebar>
   );
 }

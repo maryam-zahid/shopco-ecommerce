@@ -176,9 +176,9 @@ export default async function AdminCustomersPage() {
         </div>
       </div>
 
-      <AdminCustomersClient
-        initialCustomers={rows}
-      />
+   <AdminCustomersClient
+  initialCustomers={rows}
+/>
     </div>
   );
 }
