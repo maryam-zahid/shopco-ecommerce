@@ -2,44 +2,52 @@
 import Image from "next/image";
 import Link from "next/link";
 
-type DressStyle = {
+import { prisma } from "@/lib/prisma";
+
+type DressStyleCardData = {
   name: string;
+  slug: string;
   href: string;
   image: string;
   desktopWidth: "small" | "large";
 };
 
-const styles: DressStyle[] = [
+const dressStylePresentation: Record<
+  string,
   {
-    name: "Casual",
-    href: "/category/casual",
-    image: "/images/dress-style/casual-v2.png",
+    image: string;
+    desktopWidth: "small" | "large";
+  }
+> = {
+  casual: {
+    image:
+      "/images/dress-style/casual-v2.png",
     desktopWidth: "small",
   },
-  {
-    name: "Formal",
-    href: "/category/formal",
-    image: "/images/dress-style/formal-v2.png",
+
+  formal: {
+    image:
+      "/images/dress-style/formal-v2.png",
     desktopWidth: "large",
   },
-  {
-    name: "Party",
-    href: "/category/party",
-    image: "/images/dress-style/party-v2.png",
+
+  party: {
+    image:
+      "/images/dress-style/party-v2.png",
     desktopWidth: "large",
   },
-  {
-    name: "Gym",
-    href: "/category/gym",
-    image: "/images/dress-style/gym-v2.png",
+
+  gym: {
+    image:
+      "/images/dress-style/gym-v2.png",
     desktopWidth: "small",
   },
-];
+};
 
 function DressStyleCard({
   style,
 }: {
-  style: DressStyle;
+  style: DressStyleCardData;
 }) {
   return (
     <Link
@@ -121,12 +129,92 @@ function DressStyleCard({
   );
 }
 
-export default function BrowseDressStyleSection() {
-  const casual = styles[0];
-  const formal = styles[1];
-  const party = styles[2];
-  const gym = styles[3];
+export default async function BrowseDressStyleSection() {
+  const databaseStyles =
+    await prisma.dressStyle.findMany({
+      where: {
+        isActive: true,
 
+        slug: {
+          in: [
+            "casual",
+            "formal",
+            "party",
+            "gym",
+          ],
+        },
+      },
+
+      select: {
+        name: true,
+        slug: true,
+      },
+    });
+
+  const styles =
+    databaseStyles
+      .map((style) => {
+        const presentation =
+          dressStylePresentation[
+            style.slug
+          ];
+
+        if (!presentation) {
+          return null;
+        }
+
+        return {
+          name: style.name,
+          slug: style.slug,
+
+href:
+  `/category/${style.slug}`,
+          image:
+            presentation.image,
+
+          desktopWidth:
+            presentation.desktopWidth,
+        };
+      })
+      .filter(
+        (
+          style,
+        ): style is DressStyleCardData =>
+          style !== null,
+      );
+
+  const casual =
+    styles.find(
+      (style) =>
+        style.slug === "casual",
+    );
+
+  const formal =
+    styles.find(
+      (style) =>
+        style.slug === "formal",
+    );
+
+  const party =
+    styles.find(
+      (style) =>
+        style.slug === "party",
+    );
+
+  const gym =
+    styles.find(
+      (style) =>
+        style.slug === "gym",
+    );
+
+  if (
+    !casual ||
+    !formal ||
+    !party ||
+    !gym
+  ) {
+    return null;
+  }
   return (
     <section
       className="

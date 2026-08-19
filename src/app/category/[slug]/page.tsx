@@ -31,30 +31,55 @@ export default async function CategoryPage({
   const { slug } = await params;
 
   const query = await searchParams;
+/* =========================================
+   CATEGORY / DRESS STYLE
+========================================= */
 
-  /* =========================================
-     CATEGORY
-  ========================================= */
+const category =
+  await prisma.category.findFirst({
+    where: {
+      slug,
+      isActive: true,
+    },
 
-  const category =
-    await prisma.category.findFirst({
-      where: {
-        slug,
-        isActive: true,
-      },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      description: true,
+    },
+  });
 
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        description: true,
-      },
-    });
+const dressStyle =
+  category
+    ? null
+    : await prisma.dressStyle.findFirst({
+        where: {
+          slug,
+          isActive: true,
+        },
 
-  if (!category) {
-    notFound();
-  }
-  const activeCategory = category;
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          description: true,
+        },
+      });
+
+if (
+  !category &&
+  !dressStyle
+) {
+  notFound();
+}
+
+const activeCollection =
+  category ??
+  dressStyle!;
+
+const isDressStyle =
+  Boolean(dressStyle);
 
   /* =========================================
      QUERY VALUES
@@ -101,30 +126,36 @@ export default async function CategoryPage({
      PRODUCTS
   ========================================= */
 
-  const result =
-    await getActiveProducts({
-     categorySlug:
-  activeCategory.slug,
+ const result =
+  await getActiveProducts({
+    categorySlug:
+      isDressStyle
+        ? undefined
+        : activeCollection.slug,
 
-      page,
+    dressStyleSlug:
+      isDressStyle
+        ? activeCollection.slug
+        : undefined,
 
-      pageSize: 9,
+    page,
 
-      sort,
+    pageSize: 9,
 
-      minPrice,
+    sort,
 
-      maxPrice,
+    minPrice,
 
-      color:
-        query.color ||
-        undefined,
+    maxPrice,
 
-      size:
-        query.size ||
-        undefined,
-    });
+    color:
+      query.color ||
+      undefined,
 
+    size:
+      query.size ||
+      undefined,
+  });
   /* =========================================
      PRODUCT CARD MAPPING
   ========================================= */
@@ -237,7 +268,7 @@ export default async function CategoryPage({
       );
     }
 
-    return `/category/${activeCategory.slug}?${params.toString()}`;
+    return `/category/${activeCollection.slug}?${params.toString()}`;
   }
 
   return (
@@ -295,7 +326,7 @@ export default async function CategoryPage({
           <span>›</span>
 
           <span className="text-black">
-{activeCategory.name}
+{activeCollection.name}
           </span>
         </div>
 
@@ -333,10 +364,10 @@ export default async function CategoryPage({
                   "var(--font-archivo-black)",
               }}
             >
-{activeCategory.name.toUpperCase()}
+{activeCollection.name.toUpperCase()}
             </h1>
 
-{activeCategory.description && (
+{activeCollection.description && (
   <p
     className="
       mt-[6px]
@@ -352,7 +383,7 @@ export default async function CategoryPage({
         "var(--font-satoshi)",
     }}
   >
-    {activeCategory.description}
+    {activeCollection.description}
   </p>
 )}
           </div>
@@ -537,29 +568,33 @@ export default async function CategoryPage({
                   }}
                 />
 
-                <button
-                  type="submit"
-                  className="
-                    flex
-                    h-[42px]
-                    w-full
-                    items-center
-                    justify-center
+               <button
+  type="submit"
+  className="
+    flex
+    h-[42px]
+    w-full
+    items-center
+    justify-center
 
-                    rounded-[62px]
+    rounded-[62px]
 
-                    bg-black
+    text-[13px]
+    font-medium
 
-                    text-[13px]
-                    font-medium
-                    text-white
-
-                    transition-opacity
-                    hover:opacity-85
-                  "
-                >
-                  Apply Filter
-                </button>
+    transition-opacity
+    hover:opacity-85
+  "
+  style={{
+    backgroundColor: "#000000",
+    color: "#FFFFFF",
+    fontFamily: "var(--font-satoshi)",
+  }}
+>
+  <span style={{ color: "#FFFFFF" }}>
+    Apply Filter
+  </span>
+</button>
               </form>
             </div>
 
@@ -592,32 +627,32 @@ export default async function CategoryPage({
                   gap-[12px]
                 "
               >
-                <CategoryLink
-                  href="/category/men"
-                  label="Men"
-                  active={
-activeCategory.slug ===
-                    "men"
-                  }
-                />
+              <CategoryLink
+  label="Men"
+  href="/category/men"
+  active={
+    !isDressStyle &&
+    activeCollection.slug === "men"
+  }
+/>
 
-                <CategoryLink
-                  href="/category/women"
-                  label="Women"
-                  active={
-activeCategory.slug ===
-                    "women"
-                  }
-                />
+<CategoryLink
+  label="Women"
+  href="/category/women"
+  active={
+    !isDressStyle &&
+    activeCollection.slug === "women"
+  }
+/>
 
-                <CategoryLink
-                  href="/category/kids"
-                  label="Kids"
-                  active={
-activeCategory.slug ===
-                    "kids"
-                  }
-                />
+<CategoryLink
+  label="Kids"
+  href="/category/kids"
+  active={
+    !isDressStyle &&
+    activeCollection.slug === "kids"
+  }
+/>
               </div>
             </div>
 
@@ -652,28 +687,30 @@ activeCategory.slug ===
                   (size) => (
                     <Link
                       key={size}
-                   href={`/category/${activeCategory.slug}?size=${encodeURIComponent(
+                   href={`/category/${activeCollection.slug}?size=${encodeURIComponent(
   size,
 )}`}
-                      className={`
-                        flex
-                        h-[38px]
-                        items-center
-                        justify-center
+                     className={`
+  flex
+  h-[38px]
+  items-center
+  justify-center
 
-                        rounded-[62px]
+  rounded-[62px]
 
-                        px-[14px]
+  px-[14px]
 
-                        text-[12px]
+  text-[12px]
 
-                        ${
-                          query.size ===
-                          size
-                            ? "bg-black text-white"
-                            : "bg-[#F0F0F0] text-black/60"
-                        }
-                      `}
+  transition-colors
+  duration-150
+
+  ${
+    query.size === size
+      ? "!bg-black !text-white"
+      : "!bg-[#F0F0F0] !text-black/60 hover:!bg-black hover:!text-white"
+  }
+`}
                     >
                       {size}
                     </Link>
@@ -685,7 +722,7 @@ activeCategory.slug ===
             {/* RESET */}
 
             <Link
-href={`/category/${activeCategory.slug}`}              className="
+href={`/category/${activeCollection.slug}`}              className="
                 flex
                 h-[42px]
                 w-full
@@ -740,7 +777,7 @@ href={`/category/${activeCategory.slug}`}              className="
                     "var(--font-satoshi)",
                 }}
               >
-{activeCategory.name}
+{activeCollection.name}
               </h2>
 
               <div
@@ -759,7 +796,7 @@ href={`/category/${activeCategory.slug}`}              className="
 
                 <SortLinks
                   categorySlug={
-activeCategory.slug                  }
+   activeCollection.slug               }
                   currentSort={
                     sort
                   }
@@ -812,28 +849,45 @@ activeCategory.slug                  }
                   filters.
                 </p>
 
-                <Link
-               href={`/category/${activeCategory.slug}`}
-                  className="
-                    mt-[18px]
+           <Link
+  href={`/category/${activeCollection.slug}`}
+  className="
+    mt-[20px]
+    inline-flex
+    h-[48px]
+    items-center
+    justify-center
 
-                    flex
-                    h-[44px]
-                    items-center
-                    justify-center
+    rounded-full
 
-                    rounded-[62px]
+    px-[32px]
 
-                    bg-black
+    text-[14px]
+    font-medium
 
-                    px-[24px]
+    transition-opacity
+    hover:opacity-90
+  "
+  style={{
+    fontFamily:
+      "var(--font-satoshi)",
 
-                    text-[14px]
-                    text-white
-                  "
-                >
-                  Clear Filters
-                </Link>
+    backgroundColor:
+      "#000000",
+
+    color:
+      "#FFFFFF",
+  }}
+>
+  <span
+    style={{
+      color:
+        "#FFFFFF",
+    }}
+  >
+    Clear Filters
+  </span>
+</Link>
               </div>
             ) : (
               <div
