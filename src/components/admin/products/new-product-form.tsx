@@ -1037,39 +1037,109 @@ style={{
                         }
                       />
 
-                      <VariantInput
-                        label="Color"
-                        value={
-                          variant.colorName
-                        }
-                        placeholder="Black"
-                        onChange={(
-                          value,
-                        ) =>
-                          updateVariant(
-                            variant.id,
-                            "colorName",
-                            value,
-                          )
-                        }
-                      />
+                    <div className="block">
+  <Label>
+    Color
+  </Label>
 
-                      <VariantInput
-                        label="Color Value"
-                        value={
-                          variant.colorValue
-                        }
-                        placeholder="#000000"
-                        onChange={(
-                          value,
-                        ) =>
-                          updateVariant(
-                            variant.id,
-                            "colorValue",
-                            value,
-                          )
-                        }
-                      />
+  <label
+    className="
+      flex
+      h-[44px]
+      w-full
+
+      cursor-pointer
+      items-center
+
+      gap-[11px]
+
+      rounded-[8px]
+
+      bg-white
+
+      px-[11px]
+
+      transition-colors
+
+      hover:bg-[#FAFAFA]
+    "
+    style={{
+      border:
+        "1.5px solid rgba(0,0,0,0.24)",
+    }}
+  >
+    {/* SELECTED COLOR PREVIEW */}
+
+    <span
+      className="
+        h-[24px]
+        w-[24px]
+        shrink-0
+
+        rounded-[6px]
+
+        border
+        border-black/15
+      "
+      style={{
+        backgroundColor:
+          variant.colorValue,
+      }}
+    />
+
+    {/* AUTOMATIC COLOR NAME */}
+
+    <span
+      className="
+        min-w-0
+        flex-1
+
+        truncate
+
+        text-[12px]
+        font-medium
+        text-black
+      "
+    >
+      {variant.colorName}
+    </span>
+
+   
+
+    {/* HIDDEN NATIVE COLOR PICKER */}
+
+    <input
+      type="color"
+      value={
+        variant.colorValue
+      }
+      onChange={(event) => {
+        const selectedColor =
+          event.target.value;
+
+        updateVariant(
+          variant.id,
+          "colorValue",
+          selectedColor,
+        );
+
+        updateVariant(
+          variant.id,
+          "colorName",
+          getClosestColorName(
+            selectedColor,
+          ),
+        );
+      }}
+      className="
+        absolute
+        h-0
+        w-0
+        opacity-0
+      "
+    />
+  </label>
+</div>
 
                       <VariantInput
                         label="Size"
@@ -1730,18 +1800,117 @@ style={{
       </div>
     </form>
   );
+}const COLOR_NAMES = [
+  { name: "Black", hex: "#000000" },
+  { name: "White", hex: "#FFFFFF" },
+  { name: "Gray", hex: "#808080" },
+  { name: "Silver", hex: "#C0C0C0" },
+
+  { name: "Red", hex: "#FF0000" },
+  { name: "Maroon", hex: "#800000" },
+  { name: "Burgundy", hex: "#800020" },
+
+  { name: "Orange", hex: "#FFA500" },
+  { name: "Yellow", hex: "#FFFF00" },
+  { name: "Gold", hex: "#FFD700" },
+
+  { name: "Green", hex: "#008000" },
+  { name: "Olive", hex: "#808000" },
+  { name: "Lime", hex: "#00FF00" },
+  { name: "Teal", hex: "#008080" },
+
+  { name: "Blue", hex: "#0000FF" },
+  { name: "Navy", hex: "#000080" },
+  { name: "Sky Blue", hex: "#87CEEB" },
+
+  { name: "Purple", hex: "#800080" },
+  { name: "Violet", hex: "#8F00FF" },
+
+  { name: "Pink", hex: "#FFC0CB" },
+  { name: "Hot Pink", hex: "#FF69B4" },
+
+  { name: "Brown", hex: "#A52A2A" },
+  { name: "Beige", hex: "#F5F5DC" },
+  { name: "Cream", hex: "#FFFDD0" },
+  { name: "Khaki", hex: "#F0E68C" },
+];
+
+function hexToRgb(hex: string) {
+  const normalized =
+    hex.replace("#", "");
+
+  return {
+    r: parseInt(
+      normalized.substring(0, 2),
+      16,
+    ),
+
+    g: parseInt(
+      normalized.substring(2, 4),
+      16,
+    ),
+
+    b: parseInt(
+      normalized.substring(4, 6),
+      16,
+    ),
+  };
 }
 
+function getClosestColorName(
+  selectedHex: string,
+) {
+  const selected =
+    hexToRgb(selectedHex);
+
+  let closestName = "Black";
+
+  let closestDistance =
+    Number.POSITIVE_INFINITY;
+
+  for (const color of COLOR_NAMES) {
+    const rgb =
+      hexToRgb(color.hex);
+
+    const distance =
+      Math.sqrt(
+        Math.pow(
+          selected.r - rgb.r,
+          2,
+        ) +
+          Math.pow(
+            selected.g - rgb.g,
+            2,
+          ) +
+          Math.pow(
+            selected.b - rgb.b,
+            2,
+          ),
+      );
+
+    if (
+      distance <
+      closestDistance
+    ) {
+      closestDistance =
+        distance;
+
+      closestName =
+        color.name;
+    }
+  }
+
+  return closestName;
+}
 function createEmptyVariant(): VariantForm {
   return {
     id: crypto.randomUUID(),
 
     sku: "",
 
-    colorName: "",
+   colorName: "Black",
 
-    colorValue: "",
-
+colorValue: "#000000",
     size: "",
 
     stock: "0",

@@ -779,3 +779,493 @@ export async function createProductAction(
     };
   }
 }
+export async function createProductVariantAction(
+  input: {
+    productId: string;
+
+    sku: string;
+
+    colorName: string;
+
+    colorValue:
+      | string
+      | null;
+
+    size: string;
+
+    stock: number;
+
+    priceOverride:
+      | number
+      | null;
+  },
+): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+
+    if (!input.productId) {
+      return {
+        success: false,
+        message:
+          "Product ID is required.",
+      };
+    }
+
+    if (
+      !input.sku.trim() ||
+      !input.colorName.trim() ||
+      !input.size.trim()
+    ) {
+      return {
+        success: false,
+        message:
+          "SKU, color and size are required.",
+      };
+    }
+
+    if (
+      !Number.isInteger(
+        input.stock,
+      ) ||
+      input.stock < 0
+    ) {
+      return {
+        success: false,
+        message:
+          "Stock must be a whole number of 0 or greater.",
+      };
+    }
+
+    if (
+      input.priceOverride !==
+        null &&
+      input.priceOverride <= 0
+    ) {
+      return {
+        success: false,
+        message:
+          "Variant price override must be greater than 0.",
+      };
+    }
+
+    const product =
+      await prisma.product.findUnique({
+        where: {
+          id: input.productId,
+        },
+
+        select: {
+          id: true,
+        },
+      });
+
+    if (!product) {
+      return {
+        success: false,
+        message:
+          "Product not found.",
+      };
+    }
+
+    const existingSku =
+      await prisma.productVariant.findUnique({
+        where: {
+          sku:
+            input.sku.trim(),
+        },
+      });
+
+    if (existingSku) {
+      return {
+        success: false,
+        message:
+          "This SKU already exists.",
+      };
+    }
+
+    const existingCombination =
+      await prisma.productVariant.findFirst({
+        where: {
+          productId:
+            input.productId,
+
+          colorName:
+            input.colorName.trim(),
+
+          size:
+            input.size.trim(),
+        },
+      });
+
+    if (existingCombination) {
+      return {
+        success: false,
+        message:
+          "This color and size combination already exists for the product.",
+      };
+    }
+
+    await prisma.productVariant.create({
+      data: {
+        productId:
+          input.productId,
+
+        sku:
+          input.sku.trim(),
+
+        colorName:
+          input.colorName.trim(),
+
+        colorValue:
+          input.colorValue,
+
+        size:
+          input.size.trim(),
+
+        stock:
+          input.stock,
+
+        priceOverride:
+          input.priceOverride,
+
+        isActive:
+          true,
+      },
+    });
+
+    revalidatePath("/");
+    revalidatePath(
+      "/admin/products",
+    );
+    revalidatePath(
+      `/admin/products/${input.productId}`,
+    );
+    revalidatePath(
+      `/admin/products/${input.productId}/edit`,
+    );
+    revalidatePath(
+      "/admin/inventory",
+    );
+
+    return {
+      success: true,
+      message:
+        "Variant added successfully.",
+    };
+  } catch (error) {
+    console.error(
+      "CREATE_PRODUCT_VARIANT_ERROR:",
+      error,
+    );
+
+    return {
+      success: false,
+
+      message:
+        error instanceof Error
+          ? error.message
+          : "Unable to create variant.",
+    };
+  }
+}
+
+export async function updateProductVariantAction(
+  input: {
+    variantId: string;
+
+    sku: string;
+
+    colorName: string;
+
+    colorValue:
+      | string
+      | null;
+
+    size: string;
+
+    stock: number;
+
+    priceOverride:
+      | number
+      | null;
+
+    isActive: boolean;
+  },
+): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+
+    if (!input.variantId) {
+      return {
+        success: false,
+        message:
+          "Variant ID is required.",
+      };
+    }
+
+    if (
+      !input.sku.trim() ||
+      !input.colorName.trim() ||
+      !input.size.trim()
+    ) {
+      return {
+        success: false,
+        message:
+          "SKU, color and size are required.",
+      };
+    }
+
+    if (
+      !Number.isInteger(
+        input.stock,
+      ) ||
+      input.stock < 0
+    ) {
+      return {
+        success: false,
+        message:
+          "Stock must be a whole number of 0 or greater.",
+      };
+    }
+
+    if (
+      input.priceOverride !==
+        null &&
+      input.priceOverride <= 0
+    ) {
+      return {
+        success: false,
+        message:
+          "Variant price override must be greater than 0.",
+      };
+    }
+
+    const existingVariant =
+      await prisma.productVariant.findUnique({
+        where: {
+          id: input.variantId,
+        },
+
+        select: {
+          id: true,
+          productId: true,
+        },
+      });
+
+    if (!existingVariant) {
+      return {
+        success: false,
+        message:
+          "Variant not found.",
+      };
+    }
+
+    const duplicateSku =
+      await prisma.productVariant.findFirst({
+        where: {
+          sku:
+            input.sku.trim(),
+
+          id: {
+            not:
+              input.variantId,
+          },
+        },
+      });
+
+    if (duplicateSku) {
+      return {
+        success: false,
+        message:
+          "This SKU already exists.",
+      };
+    }
+
+    const duplicateCombination =
+      await prisma.productVariant.findFirst({
+        where: {
+          productId:
+            existingVariant.productId,
+
+          colorName:
+            input.colorName.trim(),
+
+          size:
+            input.size.trim(),
+
+          id: {
+            not:
+              input.variantId,
+          },
+        },
+      });
+
+    if (duplicateCombination) {
+      return {
+        success: false,
+        message:
+          "This color and size combination already exists for the product.",
+      };
+    }
+
+    await prisma.productVariant.update({
+      where: {
+        id:
+          input.variantId,
+      },
+
+      data: {
+        sku:
+          input.sku.trim(),
+
+        colorName:
+          input.colorName.trim(),
+
+        colorValue:
+          input.colorValue,
+
+        size:
+          input.size.trim(),
+
+        stock:
+          input.stock,
+
+        priceOverride:
+          input.priceOverride,
+
+        isActive:
+          input.isActive,
+      },
+    });
+
+    revalidatePath("/");
+    revalidatePath(
+      "/admin/products",
+    );
+    revalidatePath(
+      `/admin/products/${existingVariant.productId}`,
+    );
+    revalidatePath(
+      `/admin/products/${existingVariant.productId}/edit`,
+    );
+    revalidatePath(
+      "/admin/inventory",
+    );
+
+    return {
+      success: true,
+      message:
+        "Variant updated successfully.",
+    };
+  } catch (error) {
+    console.error(
+      "UPDATE_PRODUCT_VARIANT_ERROR:",
+      error,
+    );
+
+    return {
+      success: false,
+
+      message:
+        error instanceof Error
+          ? error.message
+          : "Unable to update variant.",
+    };
+  }
+}
+
+export async function deleteProductVariantAction(
+  input: {
+    variantId: string;
+  },
+): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+
+    const variant =
+      await prisma.productVariant.findUnique({
+        where: {
+          id: input.variantId,
+        },
+
+        select: {
+          id: true,
+          productId: true,
+
+          _count: {
+            select: {
+              orderItems: true,
+              cartItems: true,
+            },
+          },
+        },
+      });
+
+    if (!variant) {
+      return {
+        success: false,
+        message:
+          "Variant not found.",
+      };
+    }
+
+    if (
+      variant._count.orderItems >
+      0
+    ) {
+      return {
+        success: false,
+        message:
+          "This variant has order history and cannot be deleted. Deactivate it instead.",
+      };
+    }
+
+    await prisma.cartItem.deleteMany({
+      where: {
+        variantId:
+          variant.id,
+      },
+    });
+
+    await prisma.productVariant.delete({
+      where: {
+        id:
+          variant.id,
+      },
+    });
+
+    revalidatePath("/");
+    revalidatePath(
+      "/admin/products",
+    );
+    revalidatePath(
+      `/admin/products/${variant.productId}`,
+    );
+    revalidatePath(
+      `/admin/products/${variant.productId}/edit`,
+    );
+    revalidatePath(
+      "/admin/inventory",
+    );
+
+    return {
+      success: true,
+      message:
+        "Variant removed successfully.",
+    };
+  } catch (error) {
+    console.error(
+      "DELETE_PRODUCT_VARIANT_ERROR:",
+      error,
+    );
+
+    return {
+      success: false,
+
+      message:
+        error instanceof Error
+          ? error.message
+          : "Unable to remove variant.",
+    };
+  }
+}

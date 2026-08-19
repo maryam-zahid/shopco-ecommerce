@@ -83,6 +83,41 @@ export default async function EditProductPage({
 
           isNewArrival:
             product.isNewArrival,
+            
+            images:
+  product.images,
+
+variants:
+  product.variants.map(
+    (variant) => ({
+      id: variant.id,
+
+      sku:
+        variant.sku,
+
+      colorName:
+        variant.colorName,
+
+      colorValue:
+        variant.colorValue,
+
+      size:
+        variant.size,
+
+      stock:
+        variant.stock,
+
+      priceOverride:
+        variant.priceOverride !== null
+          ? Number(
+              variant.priceOverride,
+            )
+          : null,
+
+      isActive:
+        variant.isActive,
+    }),
+  ),
         }}
         categories={options.categories.map(
           (category) => ({
