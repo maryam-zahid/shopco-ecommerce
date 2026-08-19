@@ -28,10 +28,10 @@ export default function ProductCard({
           PRODUCT IMAGE
       ================================================== */}
 
-      <Link
-        // href={`/products/${product.slug}`}
-        href={`/product/${product.slug}`}
-        className="
+     
+<Link
+  href={`/product/${product.slug}`}
+  prefetch={false}        className="
           relative
           block
           h-[200px]
@@ -70,7 +70,8 @@ export default function ProductCard({
           PRODUCT NAME
       ================================================== */}
  <Link
-    href={`/product/${product.slug}`}
+  href={`/product/${product.slug}`}
+  prefetch={false}
     >
 
         <h3

@@ -230,6 +230,77 @@ const [products, total] =
   };
 }
 
+// export async function getProductBySlug(
+//   slug: string,
+// ) {
+//   return prisma.product.findFirst({
+//     where: {
+//       slug,
+//       status: "ACTIVE",
+
+//       category: {
+//         isActive: true,
+//       },
+//     },
+
+//     include: {
+//       category: {
+//         select: {
+//           id: true,
+//           name: true,
+//           slug: true,
+//         },
+//       },
+
+//       dressStyle: {
+//         select: {
+//           id: true,
+//           name: true,
+//           slug: true,
+//         },
+//       },
+
+//       variants: {
+//         where: {
+//           isActive: true,
+//         },
+
+//         orderBy: [
+//           {
+//             colorName: "asc",
+//           },
+//           {
+//             size: "asc",
+//           },
+//         ],
+//       },
+
+//       reviews: {
+//         where: {
+//           isVisible: true,
+//         },
+
+//         orderBy: {
+//           createdAt: "desc",
+//         },
+
+//         select: {
+//           id: true,
+//           rating: true,
+//           title: true,
+//           comment: true,
+//           createdAt: true,
+
+//           user: {
+//             select: {
+//               name: true,
+//             },
+//           },
+//         },
+//       },
+//     },
+//   });
+// }
 export async function getProductBySlug(
   slug: string,
 ) {
@@ -237,22 +308,10 @@ export async function getProductBySlug(
     where: {
       slug,
       status: "ACTIVE",
-
-      category: {
-        isActive: true,
-      },
     },
 
     include: {
       category: {
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-        },
-      },
-
-      dressStyle: {
         select: {
           id: true,
           name: true,
