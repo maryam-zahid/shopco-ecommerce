@@ -391,58 +391,78 @@ export default function CategoryFilters({
           SIZE
       ========================================= */}
 
-      <FilterTitle title="Size" />
+     <FilterTitle title="Size" />
 
-      <div
-        className="
-          mt-[16px]
-          flex
-          w-full
-          flex-wrap
-          gap-[8px]
-        "
+<div
+  className="
+    mt-[16px]
+    flex
+    w-full
+    flex-wrap
+    gap-[8px]
+  "
+>
+  {sizes.map((size) => {
+    const selected =
+      selectedSize === size;
+
+    return (
+      <button
+        type="button"
+        key={size}
+        onClick={() =>
+          setSelectedSize(size)
+        }
+        className={`
+          group
+
+          !m-0
+          !flex
+          !h-[39px]
+          !min-h-[39px]
+          !items-center
+          !justify-center
+
+          !rounded-[62px]
+          !border-0
+          !px-[20px]
+          !py-0
+
+          transition-colors
+          duration-150
+
+          ${
+            selected
+              ? "!bg-black"
+              : "!bg-[#F0F0F0] hover:!bg-black"
+          }
+        `}
+        style={{
+          fontFamily:
+            "var(--font-satoshi)",
+          fontWeight: 400,
+        }}
       >
-        {sizes.map((size) => {
-          const selected = selectedSize === size;
+        <span
+          className={`
+            text-[14px]
+            leading-[19px]
+            transition-colors
+            duration-150
 
-          return (
-            <button
-              type="button"
-              key={size}
-              onClick={() => setSelectedSize(size)}
-              className={`
-                !m-0
-                !flex
-                !h-[39px]
-                !min-h-[39px]
-                !items-center
-                !justify-center
-
-                !rounded-[62px]
-                !border-0
-                !px-[20px]
-                !py-0
-
-                text-[14px]
-                leading-[19px]
-
-                ${
-                  selected
-                    ? "!bg-black !text-white"
-                    : "!bg-[#F0F0F0] !text-black/60"
-                }
-              `}
-              style={{
-                fontFamily: "var(--font-satoshi)",
-                fontWeight: 400,
-              }}
-            >
-              {size}
-            </button>
-          );
-        })}
-      </div>
-
+            ${
+              selected
+                ? "!text-white"
+                : "!text-black/60 group-hover:!text-white"
+            }
+          `}
+        >
+          {size}
+        </span>
+      </button>
+    );
+  })}
+</div>
       <Divider />
 
       {/* =========================================
