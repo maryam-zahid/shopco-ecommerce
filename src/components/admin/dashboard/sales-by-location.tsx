@@ -245,10 +245,8 @@ export default function SalesByLocation({
         >
           {data.map(
   (item) => {
-              const positive =
-                item.change >= 0;
-
-              return (
+              
+return (
                 <div
                   key={item.country}
                 >
