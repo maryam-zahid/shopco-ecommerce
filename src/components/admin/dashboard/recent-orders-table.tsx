@@ -1,7 +1,9 @@
 "use client";
 import Image from "next/image";
 import { useMemo, useState } from "react";
-
+import {
+  useRouter,
+} from "next/navigation";
 import {
   ChevronLeft,
   ChevronRight,
@@ -34,10 +36,27 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import {
-  recentOrdersData,
-  type RecentOrder,
-} from "@/data/admin/dashboard-data";
+export type RecentOrder = {
+  id: string;
+
+  orderNumber: string;
+
+  customerId: string;
+
+  customer: string;
+
+  avatar: string;
+
+  product: string;
+
+  amount: number;
+
+  status:
+    | "Processing"
+    | "Paid"
+    | "Success"
+    | "Failed";
+};
 
 const PAGE_SIZE = 8;
 
@@ -85,8 +104,15 @@ function StatusBadge({
     </span>
   );
 }
+type RecentOrdersTableProps = {
+  orders: RecentOrder[];
+};
 
-export default function RecentOrdersTable() {
+export default function RecentOrdersTable({
+  orders,
+}: RecentOrdersTableProps) {
+  const router =
+  useRouter();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [amountDescending, setAmountDescending] =
@@ -95,7 +121,7 @@ export default function RecentOrdersTable() {
   const filteredOrders = useMemo(() => {
     const query = search.toLowerCase().trim();
 
-    const result = recentOrdersData.filter((order) => {
+   const result = orders.filter((order) => {
       if (!query) return true;
 
       return (
@@ -111,8 +137,11 @@ export default function RecentOrdersTable() {
         ? b.amount - a.amount
         : a.amount - b.amount,
     );
-  }, [search, amountDescending]);
-
+ }, [
+  orders,
+  search,
+  amountDescending,
+]);
   const totalPages = Math.max(
     1,
     Math.ceil(filteredOrders.length / PAGE_SIZE),
@@ -452,27 +481,44 @@ export default function RecentOrdersTable() {
                         align="end"
                         className="min-w-[190px]"
                       >
-                        <DropdownMenuItem
-                          className="gap-[8px] text-[14px]"
-                          onClick={() =>
-                            navigator.clipboard.writeText(
-                              order.id,
-                            )
-                          }
-                        >
-                          <Copy className="size-[15px]" />
-                          Copy order ID
-                        </DropdownMenuItem>
+                  <DropdownMenuItem
+  className="gap-[8px] text-[14px]"
+  onClick={() =>
+    navigator.clipboard.writeText(
+      order.orderNumber,
+    )
+  }
+>
+  <Copy className="size-[15px]" />
 
-                        <DropdownMenuItem className="gap-[8px] text-[14px]">
-                          <UserRound className="size-[15px]" />
-                          View customer
-                        </DropdownMenuItem>
+  Copy order ID
+</DropdownMenuItem>
 
-                        <DropdownMenuItem className="gap-[8px] text-[14px]">
-                          <CreditCard className="size-[15px]" />
-                          View payment details
-                        </DropdownMenuItem>
+<DropdownMenuItem
+  className="gap-[8px] text-[14px]"
+  onClick={() =>
+    router.push(
+      `/admin/customers?customerId=${order.customerId}`,
+    )
+  }
+>
+  <UserRound className="size-[15px]" />
+
+  View customer
+</DropdownMenuItem>
+
+<DropdownMenuItem
+  className="gap-[8px] text-[14px]"
+  onClick={() =>
+    router.push(
+      `/admin/orders/${order.orderNumber}`,
+    )
+  }
+>
+  <CreditCard className="size-[15px]" />
+
+  View payment details
+</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

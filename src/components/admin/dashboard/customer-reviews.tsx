@@ -4,9 +4,32 @@ import {
 
 import { Card } from "@/components/ui/card";
 
-import {
-  reviewDistribution,
-} from "@/data/admin/dashboard-data";
+
+type ReviewDistributionItem = {
+  rating: number;
+  count: number;
+  percentage: number;
+};
+
+type CustomerReviewsProps = {
+  totalReviews: number;
+  averageRating: number;
+
+  distribution:
+    ReviewDistributionItem[];
+
+  latest: {
+    rating: number;
+
+    title:
+      | string
+      | null;
+
+    comment: string;
+
+    customerName: string;
+  } | null;
+};
 
 const ratingColors: Record<number, string> = {
   5: "#22C55E",
@@ -16,8 +39,13 @@ const ratingColors: Record<number, string> = {
   1: "#FB7185",
 };
 
-export default function CustomerReviews() {
-  return (
+export default function CustomerReviews({
+  totalReviews,
+  averageRating,
+  distribution,
+  latest,
+}: CustomerReviewsProps) {
+    return (
     <Card
       className="
         h-full
@@ -52,8 +80,9 @@ export default function CustomerReviews() {
               text-muted-foreground
             "
           >
-            Based on 5,500 verified purchases
-          </p>
+      Based on{" "}
+{totalReviews.toLocaleString()}{" "}
+verified reviews    </p>
         </div>
 
         {/* REVIEW SUMMARY */}
@@ -100,7 +129,7 @@ export default function CustomerReviews() {
                 text-foreground
               "
             >
-              4.5
+{averageRating.toFixed(1)}
             </p>
 
             <p
@@ -117,8 +146,8 @@ export default function CustomerReviews() {
 
           {/* DISTRIBUTION */}
           <div className="flex flex-col gap-[8px]">
-            {reviewDistribution.map((item) => (
-              <div
+{distribution.map((item) => (
+                <div
                 key={item.rating}
                 className="
                   grid
@@ -199,86 +228,106 @@ export default function CustomerReviews() {
             py-[14px]
           "
         >
-          <div className="flex items-center gap-[2px]">
-            {Array.from({ length: 5 }).map(
-              (_, index) => (
-                <Star
-                  key={index}
-                  className="
-                    size-[15px]
-                    fill-[#FACC15]
-                    text-[#FACC15]
-                  "
-                />
-              ),
-            )}
-          </div>
+         
+         {latest ? (
+  <>
+    <div className="flex items-center gap-[2px]">
+      {Array.from({
+        length: 5,
+      }).map(
+        (_, index) => (
+          <Star
+            key={index}
+            className={`
+              size-[15px]
 
-          <h3
-            className="
-              mt-[6px]
-              text-[14px]
-              leading-[20px]
-              font-medium
-              text-foreground
-            "
-          >
-            Exceeded my expectations!
-          </h3>
+              ${
+                index <
+                latest.rating
+                  ? "fill-[#FACC15] text-[#FACC15]"
+                  : "fill-transparent text-black/15"
+              }
+            `}
+          />
+        ),
+      )}
+    </div>
 
-          <p
-            className="
-              mt-[8px]
-              text-[14px]
-              leading-[20px]
-              font-normal
-              text-muted-foreground
-            "
-          >
-            I was skeptical at first, but this
-            product has completely changed my
-            daily routine. The quality is
-            outstanding and it&apos;s so easy to
-            use.
-          </p>
+    <h3
+      className="
+        mt-[6px]
+        text-[14px]
+        leading-[20px]
+        font-medium
+        text-foreground
+      "
+    >
+      {latest.title ||
+        "Customer Review"}
+    </h3>
 
-          <div
-            className="
-              mt-[12px]
-              flex
-              flex-wrap
-              items-center
-              gap-[8px]
-            "
-          >
-            <span
-              className="
-                text-[12px]
-                leading-[16px]
-                text-foreground
-              "
-            >
-              Sarah J.
-            </span>
+    <p
+      className="
+        mt-[8px]
+        text-[14px]
+        leading-[20px]
+        font-normal
+        text-muted-foreground
+      "
+    >
+      {latest.comment}
+    </p>
 
-            <span
-              className="
-                rounded-[4px]
-                bg-emerald-100
+    <div
+      className="
+        mt-[12px]
+        flex
+        flex-wrap
+        items-center
+        gap-[8px]
+      "
+    >
+      <span
+        className="
+          text-[12px]
+          leading-[16px]
+          text-foreground
+        "
+      >
+        {latest.customerName}
+      </span>
 
-                px-[6px]
-                py-[2px]
+      <span
+        className="
+          rounded-[4px]
+          bg-emerald-100
 
-                text-[12px]
-                leading-[16px]
-                font-medium
-                text-emerald-700
-              "
-            >
-              Verified Purchase
-            </span>
-          </div>
-        </div>
+          px-[6px]
+          py-[2px]
+
+          text-[12px]
+          leading-[16px]
+          font-medium
+          text-emerald-700
+        "
+      >
+        Verified Customer
+      </span>
+    </div>
+  </>
+) : (
+  <div
+    className="
+      py-[20px]
+      text-center
+      text-[13px]
+      text-muted-foreground
+    "
+  >
+    No customer reviews yet.
+  </div>
+)}
+</div>
       </div>
     </Card>
   );

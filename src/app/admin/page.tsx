@@ -15,11 +15,15 @@ import CustomerReviews from "@/components/admin/dashboard/customer-reviews";
 import RecentOrdersTable from "@/components/admin/dashboard/recent-orders-table";
 import BestSellingProducts from "@/components/admin/dashboard/best-selling-products";
 import {
-  dashboardMetrics,
-} from "@/data/admin/dashboard-data";
+  getAdminDashboardData,
+} from "@/services/admin-dashboard.service";
+export default async function AdminDashboardPage() {
+  const dashboard =
+    await getAdminDashboardData();
 
-export default function AdminDashboardPage() {
-  return (
+  const dashboardMetrics =
+    dashboard.metrics;
+      return (
     <div
       className="
         w-full
@@ -128,8 +132,16 @@ export default function AdminDashboardPage() {
     min-[1920px]:gap-[14px]
   "
 >
-  <CongratulationsCard />
-
+<CongratulationsCard
+  revenue={
+    dashboard.congratulations
+      .revenue
+  }
+  change={
+    dashboard.congratulations
+      .change
+  }
+/>
   {dashboardMetrics.map((stat) => (
     <StatCard
       key={stat.id}
@@ -147,9 +159,31 @@ export default function AdminDashboardPage() {
     min-[1200px]:grid-cols-2
   "
 >
-  <RevenueChart />
-
-  <ReturningRateChart />
+<RevenueChart
+  data={dashboard.revenueChart}
+  currentYearTotal={
+    dashboard.revenueSummary.currentYear
+  }
+  previousYearTotal={
+    dashboard.revenueSummary.previousYear
+  }
+  currentYearLabel={
+    dashboard.revenueSummary.currentYearLabel
+  }
+  previousYearLabel={
+    dashboard.revenueSummary.previousYearLabel
+  }
+/>
+<ReturningRateChart
+  data={dashboard.returningRateChart}
+  rate={dashboard.returningRateSummary.rate}
+  returningCustomers={
+    dashboard.returningRateSummary.returningCustomers
+  }
+  totalCustomers={
+    dashboard.returningRateSummary.totalCustomers
+  }
+/>
 </section>
 {/* =========================================
     INSIGHTS ROW
@@ -166,11 +200,31 @@ export default function AdminDashboardPage() {
     min-[1400px]:grid-cols-[1.15fr_0.85fr_1.35fr]
   "
 >
-  <SalesByLocation />
-
+<SalesByLocation
+  data={
+    dashboard.salesByLocation
+  }
+/>
   <StoreVisitsChart />
 
-  <CustomerReviews />
+<CustomerReviews
+  totalReviews={
+    dashboard.customerReviews
+      .totalReviews
+  }
+  averageRating={
+    dashboard.customerReviews
+      .averageRating
+  }
+  distribution={
+    dashboard.customerReviews
+      .distribution
+  }
+  latest={
+    dashboard.customerReviews
+      .latest
+  }
+/>
 </section>
 {/* =========================================
     TABLES ROW
@@ -186,9 +240,16 @@ export default function AdminDashboardPage() {
     min-[1200px]:grid-cols-[1.35fr_0.95fr]
   "
 >
-  <RecentOrdersTable />
-
-  <BestSellingProducts />
+<RecentOrdersTable
+  orders={
+    dashboard.recentOrders
+  }
+/>
+<BestSellingProducts
+  productsData={
+    dashboard.bestSellingProducts
+  }
+/>
 </section>
     </div>
   );

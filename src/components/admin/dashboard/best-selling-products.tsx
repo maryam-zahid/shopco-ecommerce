@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-
+import { useRouter } from "next/navigation";
 import {
   ChevronLeft,
   ChevronRight,
@@ -32,12 +32,23 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import {
-  bestSellingProductsData,
-} from "@/data/admin/dashboard-data";
+export type BestSellingProduct = {
+  id: string;
+  slug: string | null;
+  name: string;
+  shortName: string;
+  sold: number;
+  sales: number;
+};
+type BestSellingProductsProps = {
+  productsData: BestSellingProduct[];
+};
 
-export default function BestSellingProducts() {
-  const [search, setSearch] = useState("");
+export default function BestSellingProducts({
+  productsData,
+}: BestSellingProductsProps) {
+  const router = useRouter();
+    const [search, setSearch] = useState("");
   const [soldDescending, setSoldDescending] =
     useState(false);
   const [salesDescending, setSalesDescending] =
@@ -46,8 +57,8 @@ export default function BestSellingProducts() {
   const products = useMemo(() => {
     const query = search.toLowerCase().trim();
 
-    let result = bestSellingProductsData.filter(
-      (product) =>
+let result = productsData.filter(
+        (product) =>
         !query ||
         product.name.toLowerCase().includes(query),
     );
@@ -65,11 +76,12 @@ export default function BestSellingProducts() {
     }
 
     return result;
-  }, [
-    search,
-    soldDescending,
-    salesDescending,
-  ]);
+ }, [
+  productsData,
+  search,
+  soldDescending,
+  salesDescending,
+]);
 
   function exportExcel() {
     const rows = [
@@ -372,13 +384,13 @@ export default function BestSellingProducts() {
                   </div>
                 </TableCell>
 
-                <TableCell className="px-[10px] text-[14px]">
-                  ${product.sold.toFixed(2)}
-                </TableCell>
+               <TableCell className="px-[10px] text-[14px]">
+  {product.sold}
+</TableCell>
 
-                <TableCell className="px-[10px] text-[14px]">
-                  {product.sales}
-                </TableCell>
+<TableCell className="px-[10px] text-[14px]">
+  ${product.sales.toFixed(2)}
+</TableCell>
 
                 <TableCell className="px-[8px] text-right">
                   <DropdownMenu>
@@ -396,9 +408,16 @@ export default function BestSellingProducts() {
                     </DropdownMenuTrigger>
 
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem className="gap-[8px] text-[14px]">
+                      <DropdownMenuItem 
+                     onClick={() =>
+    router.push(
+      `/admin/products/${product.id}`,
+    )
+  }
+  className="gap-[8px] text-[14px]">
                         <Package className="size-[15px]" />
                         View product
+                        
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

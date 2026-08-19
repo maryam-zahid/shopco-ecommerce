@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import {
@@ -27,82 +25,45 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-const chartData = [
-  {
-    month: "January",
-    desktop: 180,
-    mobile: 85,
-  },
-  {
-    month: "February",
-    desktop: 285,
-    mobile: 190,
-  },
-  {
-    month: "March",
-    desktop: 220,
-    mobile: 120,
-  },
-  {
-    month: "April",
-    desktop: 430,
-    mobile: 180,
-  },
-  {
-    month: "May",
-    desktop: 365,
-    mobile: 130,
-  },
-  {
-    month: "June",
-    desktop: 470,
-    mobile: 140,
-  },
-  {
-    month: "July",
-    desktop: 225,
-    mobile: 120,
-  },
-  {
-    month: "August",
-    desktop: 430,
-    mobile: 180,
-  },
-  {
-    month: "September",
-    desktop: 365,
-    mobile: 125,
-  },
-  {
-    month: "October",
-    desktop: 470,
-    mobile: 280,
-  },
-  {
-    month: "November",
-    desktop: 345,
-    mobile: 225,
-  },
-  {
-    month: "December",
-    desktop: 630,
-    mobile: 430,
-  },
-];
+type ReturningRateItem = {
+  month: string;
+  returningCustomers: number;
+  newCustomers: number;
+};
+
+type ReturningRateChartProps = {
+  data: ReturningRateItem[];
+  rate: number;
+  returningCustomers: number;
+  totalCustomers: number;
+};
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  returningCustomers: {
+    label: "Returning Customers",
     color: "#111111",
   },
 
-  mobile: {
-    label: "Mobile",
+  newCustomers: {
+    label: "New Customers",
     color: "#C5C5C9",
   },
 } satisfies ChartConfig;
 
-export default function ReturningRateChart() {
+export default function ReturningRateChart({
+  data,
+  rate,
+  returningCustomers,
+  totalCustomers,
+}: ReturningRateChartProps) {
+  const maxValue = Math.max(
+    1,
+    ...data.flatMap((item) => [
+      item.returningCustomers,
+      item.newCustomers,
+    ]),
+  );
+
   return (
     <Card
       className="
@@ -116,6 +77,7 @@ export default function ReturningRateChart() {
       "
     >
       {/* HEADER */}
+
       <CardHeader
         className="
           flex
@@ -157,7 +119,7 @@ export default function ReturningRateChart() {
                 text-foreground
               "
             >
-              $42,379
+${totalCustomers.toLocaleString()}
             </span>
 
             <span
@@ -176,7 +138,7 @@ export default function ReturningRateChart() {
                 text-emerald-600
               "
             >
-              +2.5%
++{rate}%
             </span>
           </div>
         </div>
@@ -204,6 +166,7 @@ export default function ReturningRateChart() {
       </CardHeader>
 
       {/* CHART */}
+
       <CardContent
         className="
           px-[22px]
@@ -220,7 +183,7 @@ export default function ReturningRateChart() {
         >
           <LineChart
             accessibilityLayer
-            data={chartData}
+            data={data}
             margin={{
               top: 8,
               right: 6,
@@ -229,6 +192,7 @@ export default function ReturningRateChart() {
             }}
           >
             {/* HORIZONTAL GRID ONLY */}
+
             <CartesianGrid
               vertical={false}
               stroke="#ECECEF"
@@ -237,22 +201,32 @@ export default function ReturningRateChart() {
 
             <YAxis
               hide
-              domain={[0, 700]}
+              domain={[
+                0,
+                Math.max(
+                  5,
+                  Math.ceil(
+                    maxValue * 1.2,
+                  ),
+                ),
+              ]}
             />
 
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={12}
-              fontSize={12}
-              tick={{
-                fill: "#737373",
-              }}
-              tickFormatter={(value: string) =>
-                value.slice(0, 3)
-              }
-            />
+           <XAxis
+  dataKey="month"
+  tickLine={false}
+  axisLine={false}
+  tickMargin={12}
+  fontSize={12}
+  interval={0}
+  minTickGap={0}
+  tick={{
+    fill: "#737373",
+  }}
+  tickFormatter={(value: string) =>
+    value.slice(0, 3)
+  }
+/>
 
             <ChartTooltip
               cursor={false}
@@ -276,7 +250,10 @@ export default function ReturningRateChart() {
                     font-semibold
                     text-black
                   "
-                  formatter={(value, name) => {
+                  formatter={(
+                    value,
+                    name,
+                  ) => {
                     const config =
                       chartConfig[
                         name as keyof typeof chartConfig
@@ -291,7 +268,6 @@ export default function ReturningRateChart() {
                           py-[1px]
                         "
                       >
-                        {/* COLOR BOX */}
                         <span
                           className="
                             mr-[8px]
@@ -340,11 +316,12 @@ export default function ReturningRateChart() {
               }
             />
 
-            {/* DESKTOP */}
+            {/* RETURNING CUSTOMERS */}
+
             <Line
               type="linear"
-              dataKey="desktop"
-              stroke="var(--color-desktop)"
+              dataKey="returningCustomers"
+              stroke="var(--color-returningCustomers)"
               strokeWidth={2}
               dot={false}
               activeDot={{
@@ -354,11 +331,12 @@ export default function ReturningRateChart() {
               }}
             />
 
-            {/* MOBILE */}
+            {/* NEW CUSTOMERS */}
+
             <Line
               type="linear"
-              dataKey="mobile"
-              stroke="var(--color-mobile)"
+              dataKey="newCustomers"
+              stroke="var(--color-newCustomers)"
               strokeWidth={2}
               dot={false}
               activeDot={{

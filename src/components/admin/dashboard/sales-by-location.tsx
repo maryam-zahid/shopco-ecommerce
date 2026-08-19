@@ -16,29 +16,40 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import {
-  locationSalesData,
-} from "@/data/admin/dashboard-data";
 
-export default function SalesByLocation() {
-  function exportPDF() {
+type SalesByLocationItem = {
+  country: string;
+  sales: number;
+  orders: number;
+  percentage: number;
+};
+
+type SalesByLocationProps = {
+  data: SalesByLocationItem[];
+};
+export default function SalesByLocation({
+  data,
+}: SalesByLocationProps) {
+    function exportPDF() {
     window.print();
   }
 
   function exportExcel() {
-    const rows = [
-      [
-        "Country",
-        "Change",
-        "Sales Percentage",
-      ],
+   const rows = [
+  [
+    "Country",
+    "Orders",
+    "Sales",
+    "Sales Percentage",
+  ],
 
-      ...locationSalesData.map((item) => [
-        item.country,
-        `${item.change}%`,
-        `${item.percentage}%`,
-      ]),
-    ];
+  ...data.map((item) => [
+    item.country,
+    item.orders.toString(),
+    `$${item.sales.toFixed(2)}`,
+    `${item.percentage}%`,
+  ]),
+];
 
     const csvContent = rows
       .map((row) => row.join(","))
@@ -232,8 +243,8 @@ export default function SalesByLocation() {
             gap-[18px]
           "
         >
-          {locationSalesData.map(
-            (item) => {
+          {data.map(
+  (item) => {
               const positive =
                 item.change >= 0;
 
@@ -269,30 +280,27 @@ export default function SalesByLocation() {
                         {item.country}
                       </span>
 
-                      <span
-                        className={`
-                          rounded-full
-                          border
+                   <span
+  className="
+    rounded-full
+    border
+    border-emerald-200
+    bg-emerald-50
 
-                          px-[7px]
-                          py-[1px]
+    px-[7px]
+    py-[1px]
 
-                          text-[12px]
-                          leading-[16px]
-                          font-medium
-
-                          ${
-                            positive
-                              ? "border-emerald-200 bg-emerald-50 text-emerald-600"
-                              : "border-red-200 bg-red-50 text-red-500"
-                          }
-                        `}
-                      >
-                        {positive
-                          ? "+"
-                          : ""}
-                        {item.change}%
-                      </span>
+    text-[12px]
+    leading-[16px]
+    font-medium
+    text-emerald-600
+  "
+>
+  {item.orders}{" "}
+  {item.orders === 1
+    ? "order"
+    : "orders"}
+</span>
                     </div>
 
                     {/* PERCENTAGE */}

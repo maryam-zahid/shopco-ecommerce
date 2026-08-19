@@ -3,8 +3,16 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
-export default function CongratulationsCard() {
-  return (
+type CongratulationsCardProps = {
+  revenue: number;
+  change: number;
+};
+
+export default function CongratulationsCard({
+  revenue,
+  change,
+}: CongratulationsCardProps) {
+    return (
     <Card
       className="
         relative
@@ -158,8 +166,13 @@ export default function CongratulationsCard() {
                 text-foreground
               "
             >
-              $15,231.89
-            </p>
+{revenue.toLocaleString(
+  "en-US",
+  {
+    style: "currency",
+    currency: "USD",
+  },
+)}            </p>
 
             <p
               className="
@@ -173,9 +186,17 @@ export default function CongratulationsCard() {
                 text-muted-foreground
               "
             >
-              <span className="font-medium text-emerald-600">
-                +65%
-              </span>{" "}
+             <span
+  className={
+    change >= 0
+      ? "font-medium text-emerald-600"
+      : "font-medium text-red-500"
+  }
+>
+  {change >= 0 ? "+" : ""}
+  {change}%
+</span>
+              {" "}
               from last month
             </p>
           </div>

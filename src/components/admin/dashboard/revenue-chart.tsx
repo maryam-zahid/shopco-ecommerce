@@ -21,52 +21,42 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-const chartData = [
-  {
-    month: "January",
-    desktop: 190,
-    mobile: 180,
-  },
-  {
-    month: "February",
-    desktop: 250,
-    mobile: 200,
-  },
-  {
-    month: "March",
-    desktop: 240,
-    mobile: 120,
-  },
-  {
-    month: "April",
-    desktop: 120,
-    mobile: 190,
-  },
-  {
-    month: "May",
-    desktop: 110,
-    mobile: 130,
-  },
-  {
-    month: "June",
-    desktop: 250,
-    mobile: 140,
-  },
-];
+type RevenueChartItem = {
+  month: string;
+  currentYear: number;
+  previousYear: number;
+};
+
+type RevenueChartProps = {
+  data: RevenueChartItem[];
+
+  currentYearTotal: number;
+  previousYearTotal: number;
+
+  currentYearLabel: string;
+  previousYearLabel: string;
+};
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  currentYear: {
+    label: "Current Year",
     color: "#09090B",
   },
-  mobile: {
-    label: "Mobile",
+
+  previousYear: {
+    label: "Previous Year",
     color: "#5B5B64",
   },
 } satisfies ChartConfig;
 
-export default function RevenueChart() {
-  return (
+export default function RevenueChart({
+  data,
+  currentYearTotal,
+  previousYearTotal,
+  currentYearLabel,
+  previousYearLabel,
+}: RevenueChartProps) {
+    return (
     <Card
       className="
         overflow-hidden
@@ -143,7 +133,7 @@ export default function RevenueChart() {
                   text-muted-foreground
                 "
               >
-                Desktop
+                {currentYearLabel}
               </p>
 
               <p
@@ -155,7 +145,12 @@ export default function RevenueChart() {
                   text-foreground
                 "
               >
-                24,828
+${currentYearTotal.toLocaleString(
+  "en-US",
+  {
+    maximumFractionDigits: 2,
+  },
+)}
               </p>
             </div>
 
@@ -170,7 +165,7 @@ export default function RevenueChart() {
                   text-muted-foreground
                 "
               >
-                Mobile
+                {previousYearLabel}
               </p>
 
               <p
@@ -182,8 +177,13 @@ export default function RevenueChart() {
                   text-foreground
                 "
               >
-                25,010
-              </p>
+        ${previousYearTotal.toLocaleString(
+  "en-US",
+  {
+    maximumFractionDigits: 2,
+  },
+)}
+      </p>
             </div>
           </div>
         </div>
@@ -205,7 +205,7 @@ export default function RevenueChart() {
         >
           <BarChart
             accessibilityLayer
-            data={chartData}
+data={data}
             barGap={7}
             barCategoryGap="30%"
           >
@@ -217,16 +217,19 @@ export default function RevenueChart() {
   domain={[0, 250]}
   hide
 />
-           <XAxis
+         <XAxis
   dataKey="month"
   tickLine={false}
   axisLine={false}
-  tickMargin={10}
-  fontSize={12}
-  tick={{
-    fill: "#737373",
+  tickMargin={12}
+  interval={0}
+  padding={{
+    left: 0,
+    right: 0,
   }}
-  
+  tick={{
+    fontSize: 12,
+  }}
 />
 
          <ChartTooltip
@@ -324,19 +327,19 @@ export default function RevenueChart() {
     />
   }
 />
-            <Bar
-              dataKey="desktop"
-              fill="var(--color-desktop)"
-              radius={[5, 5, 0, 0]}
-              barSize={41}
-            />
+          <Bar
+  dataKey="currentYear"
+  fill="var(--color-currentYear)"
+  radius={[5, 5, 0, 0]}
+  barSize={41}
+/>
 
-            <Bar
-              dataKey="mobile"
-              fill="var(--color-mobile)"
-              radius={[5, 5, 0, 0]}
-              barSize={41}
-            />
+<Bar
+  dataKey="previousYear"
+  fill="var(--color-previousYear)"
+  radius={[5, 5, 0, 0]}
+  barSize={41}
+/>
           </BarChart>
         </ChartContainer>
       </CardContent>
