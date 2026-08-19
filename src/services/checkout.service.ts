@@ -1114,27 +1114,36 @@ shippingPhone:
       order.shippingCountry,
   },
 
-  items: order.items.map(
-    (item) => ({
-      productName:
-        item.productName,
+ 
 
-      colorName:
-        item.colorName,
+     items: order.items.map(
+  (item) => ({
+    productName:
+      item.productName,
 
-      size:
-        item.size,
+    productImage:
+      item.productImage,
 
-      quantity:
-        item.quantity,
+    colorName:
+      item.colorName,
 
-      unitPrice:
-        Number(item.unitPrice),
+    size:
+      item.size,
 
-      subtotal:
-        Number(item.subtotal),
-    }),
-  ),
+    quantity:
+      item.quantity,
+
+    unitPrice:
+      Number(
+        item.unitPrice,
+      ),
+
+    subtotal:
+      Number(
+        item.subtotal,
+      ),
+  }),
+),
 };
     },
   );

@@ -5,8 +5,19 @@ import { prisma } from "@/lib/prisma";
 
 import AdminOrdersTable from "@/components/admin/orders/admin-orders-table";
 
-export default async function AdminOrdersPage() {
-  const session = await auth();
+type AdminOrdersPageProps = {
+  searchParams: Promise<{
+    customerId?: string;
+  }>;
+};
+
+export default async function AdminOrdersPage({
+  searchParams,
+}: AdminOrdersPageProps) {
+  const {
+    customerId,
+  } = await searchParams;
+    const session = await auth();
 
   if (!session?.user?.id) {
     redirect("/login");
@@ -16,13 +27,19 @@ export default async function AdminOrdersPage() {
     redirect("/");
   }
 
-  const orders =
-    await prisma.order.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
+ const orders =
+  await prisma.order.findMany({
+    where: customerId
+      ? {
+          userId: customerId,
+        }
+      : undefined,
 
-      include: {
+    orderBy: {
+      createdAt: "desc",
+    },
+
+    include: {
         user: {
           select: {
             name: true,

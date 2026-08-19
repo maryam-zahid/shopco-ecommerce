@@ -326,35 +326,68 @@ export default function OrderManagementPanel({
               onClick={
                 updateDeliveryStatus
               }
-              className="
+            //   className="
+            //     inline-flex
+            //     h-[44px]
+            //     shrink-0
+            //     items-center
+            //     justify-center
+            //     gap-[7px]
+
+            //     rounded-[8px]
+
+            //     px-[18px]
+
+            //     text-[13px]
+            //     font-semibold
+
+            //     whitespace-nowrap
+
+            //     disabled:
+            //     cursor-not-allowed
+
+            //     disabled:
+            //     opacity-50
+            //   "
+            //   style={{
+            //     backgroundColor:
+            //       "#000000",
+
+            //     border:
+            //       "1px solid #000000",
+
+            //     color:
+            //       "#FFFFFF",
+            //   }}
+            // >
+                className="
                 inline-flex
-                h-[44px]
-                shrink-0
+                h-[42px]
+                min-w-[140px]
                 items-center
                 justify-center
-                gap-[7px]
 
                 rounded-[8px]
 
-                px-[18px]
+                px-[20px]
 
                 text-[13px]
                 font-semibold
+                text-white
 
-                whitespace-nowrap
+                transition-opacity
 
-                disabled:
-                cursor-not-allowed
+                hover:opacity-90
 
-                disabled:
-                opacity-50
+                disabled:cursor-not-allowed
+                disabled:opacity-50
               "
               style={{
+                border:
+                  "1.5px solid #000000",
+
                 backgroundColor:
                   "#000000",
-
-                border:
-                  "1px solid #000000",
 
                 color:
                   "#FFFFFF",
@@ -368,12 +401,7 @@ export default function OrderManagementPanel({
                 }}
               />
 
-              <span
-                style={{
-                  color:
-                    "#FFFFFF",
-                }}
-              >
+              <span>
                 {isPending
                   ? "Updating..."
                   : "Apply Status"}
@@ -484,45 +512,41 @@ export default function OrderManagementPanel({
                   onClick={
                     markCodPaid
                   }
-                  className="
-                    inline-flex
-                    h-[44px]
-                    shrink-0
-                    items-center
-                    justify-center
+               
+                    className="
+                inline-flex
+                h-[42px]
+                min-w-[140px]
+                items-center
+                justify-center
 
-                    rounded-[8px]
+                rounded-[8px]
 
-                    px-[18px]
+                px-[20px]
 
-                    text-[13px]
-                    font-semibold
+                text-[13px]
+                font-semibold
+                text-white
 
-                    whitespace-nowrap
+                transition-opacity
 
-                    disabled:
-                    cursor-not-allowed
+                hover:opacity-90
 
-                    disabled:
-                    opacity-50
-                  "
-                  style={{
-                    backgroundColor:
-                      "#000000",
+                disabled:cursor-not-allowed
+                disabled:opacity-50
+              "
+              style={{
+                border:
+                  "1.5px solid #000000",
 
-                    border:
-                      "1px solid #000000",
+                backgroundColor:
+                  "#000000",
 
-                    color:
-                      "#FFFFFF",
-                  }}
-                >
-                  <span
-                    style={{
-                      color:
-                        "#FFFFFF",
-                    }}
-                  >
+                color:
+                  "#FFFFFF",
+              }}
+            >
+                  <span >
                     Mark Paid
                   </span>
                 </button>

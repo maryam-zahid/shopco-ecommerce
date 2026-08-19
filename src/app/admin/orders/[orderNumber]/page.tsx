@@ -14,7 +14,7 @@ import {
 import { prisma } from "@/lib/prisma";
 
 import OrderDetailActions from "@/components/admin/orders/order-detail-actions";
-
+import PrintableOrderInvoice from "@/components/admin/orders/printable-order-invoice";
 import OrderManagementPanel from "@/components/admin/orders/order-management-panel";
 
 type AdminOrderDetailPageProps = {
@@ -208,7 +208,7 @@ export default async function AdminOrderDetailPage({
             <ArrowLeft className="size-[17px]" />
           </Link>
 
-          <OrderDetailActions />
+<OrderDetailActions />
         </div>
          {/* =====================================
             ORDER MANAGEMENT
@@ -1037,8 +1037,103 @@ style={{
               </tbody>
             </table>
           </div>
-        </section>
+               </section>
       </div>
+
+      <PrintableOrderInvoice
+        orderNumber={order.orderNumber}
+        createdAt={formatDate(
+          order.createdAt,
+        )}
+        paymentMethod={
+          order.paymentMethod
+        }
+        paymentStatus={
+          order.paymentStatus
+        }
+        orderStatus={
+          order.status
+        }
+
+        shippingFullName={
+          order.shippingFullName
+        }
+        shippingEmail={
+          order.shippingEmail
+        }
+        shippingPhone={
+          order.shippingPhone
+        }
+
+        shippingAddressLine1={
+          order.shippingAddressLine1
+        }
+        shippingAddressLine2={
+          order.shippingAddressLine2
+        }
+        shippingCity={
+          order.shippingCity
+        }
+        shippingState={
+          order.shippingState
+        }
+        shippingPostalCode={
+          order.shippingPostalCode
+        }
+        shippingCountry={
+          order.shippingCountry
+        }
+
+        subtotal={subtotal}
+        productDiscount={
+          productDiscount
+        }
+        couponDiscount={
+          couponDiscount
+        }
+        couponCode={
+          order.couponCodeSnapshot
+        }
+        shippingAmount={
+          shippingAmount
+        }
+        taxAmount={
+          taxAmount
+        }
+        total={total}
+
+        items={order.items.map(
+          (item) => ({
+            id: item.id,
+
+            productName:
+              item.productName,
+
+            productImage:
+              item.productImage,
+
+            colorName:
+              item.colorName,
+
+            size:
+              item.size,
+
+            quantity:
+              item.quantity,
+
+            unitPrice:
+              Number(
+                item.unitPrice,
+              ),
+
+            subtotal:
+              Number(
+                item.subtotal,
+              ),
+          }),
+        )}
+      />
+
     </main>
   );
 }

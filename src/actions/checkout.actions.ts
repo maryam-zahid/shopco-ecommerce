@@ -223,12 +223,33 @@ export async function placeOrderAction(
 }
 
   try {
-    const order =
-      await createCodOrder(
-        session.user.id,
-        parsed.data,
-      );
-      if (order.shipping.email) {
+   const order =
+  await createCodOrder(
+    session.user.id,
+    parsed.data,
+  );
+
+console.log(
+  "ORDER_CONFIRMATION_DEBUG:",
+  {
+    orderNumber:
+      order.orderNumber,
+
+    shippingEmail:
+      order.shipping.email,
+
+    shippingFullName:
+      order.shipping.fullName,
+
+    itemsCount:
+      order.items.length,
+
+    total:
+      order.total,
+  },
+);
+
+if (order.shipping.email) {
   try {
     await sendOrderConfirmationEmail({
       to: order.shipping.email,
@@ -268,15 +289,18 @@ export async function placeOrderAction(
       "ORDER_CONFIRMATION_EMAIL_ERROR:",
       emailError,
     );
-
-    /*
-     * IMPORTANT:
-     *
-     * The order already exists.
-     * Email failure must NOT make checkout
-     * report that the order failed.
-     */
   }
+} else {
+  console.warn(
+    "ORDER_CONFIRMATION_EMAIL_SKIPPED:",
+    {
+      orderNumber:
+        order.orderNumber,
+
+      reason:
+        "Order has no shipping email.",
+    },
+  );
 }
 
     return {

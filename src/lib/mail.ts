@@ -2,6 +2,8 @@ import "server-only";
 
 import nodemailer from "nodemailer";
 
+import path from "node:path";
+import { existsSync } from "node:fs";
 /* =========================================================
    SMTP CONFIGURATION
 ========================================================= */
@@ -94,10 +96,7 @@ export type OrderConfirmationEmailData = {
 export async function sendOrderConfirmationEmail(
   data: OrderConfirmationEmailData,
 ) {
-  if (
-    !transporter ||
-    !fromEmail
-  ) {
+  if (!transporter || !fromEmail) {
     console.warn(
       "ORDER_CONFIRMATION_EMAIL_SKIPPED: SMTP_USER, SMTP_PASS or SMTP_FROM is missing.",
     );
@@ -108,166 +107,285 @@ export async function sendOrderConfirmationEmail(
     };
   }
 
-  /* ---------------------------------------------------------
-     PRODUCT ROWS
-  --------------------------------------------------------- */
+  /* =========================================================
+     EMAIL IMAGE ATTACHMENTS
+  ========================================================= */
 
-  const itemRows = data.items
-    .map(
-      (item) => `
-        <tr>
-          <td
-            style="
-              padding:16px 0;
-              border-bottom:1px solid #eeeeee;
-            "
-          >
-            <table
-              width="100%"
-              cellspacing="0"
-              cellpadding="0"
-              border="0"
+  const attachments: {
+    filename: string;
+    path: string;
+    cid: string;
+  }[] = [];
+
+  function getEmailImageSource(
+    image: string | null | undefined,
+    index: number,
+  ) {
+    if (!image) {
+      return null;
+    }
+
+    /*
+     * Cloudinary / public URL.
+     */
+    if (
+      image.startsWith("https://") ||
+      image.startsWith("http://")
+    ) {
+      return image;
+    }
+
+    /*
+     * Local /public image.
+     *
+     * Example:
+     * /images/products/shirt.png
+     *
+     * Gmail cannot access localhost,
+     * therefore embed it using CID.
+     */
+    if (image.startsWith("/")) {
+      const relativePath =
+        image.replace(/^\/+/, "");
+
+      const localPath =
+        path.join(
+          process.cwd(),
+          "public",
+          relativePath,
+        );
+
+      if (!existsSync(localPath)) {
+        console.warn(
+          "ORDER_EMAIL_IMAGE_NOT_FOUND:",
+          {
+            image,
+            localPath,
+          },
+        );
+
+        return null;
+      }
+
+      const cid =
+        `shopco-product-${index}@shopco`;
+
+      attachments.push({
+        filename:
+          path.basename(localPath),
+
+        path:
+          localPath,
+
+        cid,
+      });
+
+      return `cid:${cid}`;
+    }
+
+    return null;
+  }
+
+  /* =========================================================
+     PRODUCT ROWS
+  ========================================================= */
+
+  const itemRows =
+    data.items
+      .map((item, index) => {
+        const productImageSrc =
+          getEmailImageSource(
+            item.productImage,
+            index,
+          );
+
+        return `
+          <tr>
+            <td
               style="
-                border-collapse:collapse;
+                padding:16px 0;
+                border-bottom:1px solid #eeeeee;
               "
             >
-              <tr>
-                ${
-                  item.productImage
-                    ? `
-                      <td
-                        width="82"
-                        valign="top"
-                        style="
-                          width:82px;
-                          padding-right:16px;
-                        "
-                      >
-                        <img
-                          src="${escapeHtml(
-                            item.productImage,
-                          )}"
-                          alt="${escapeHtml(
-                            item.productName,
-                          )}"
-                          width="70"
-                          height="70"
+              <table
+                width="100%"
+                cellspacing="0"
+                cellpadding="0"
+                border="0"
+                style="
+                  border-collapse:collapse;
+                "
+              >
+                <tr>
+                  ${
+                    productImageSrc
+                      ? `
+                        <td
+                          width="86"
+                          valign="top"
                           style="
-                            display:block;
-                            width:70px;
-                            height:70px;
-                            object-fit:cover;
-                            border-radius:10px;
-                            background:#f4f4f4;
+                            width:86px;
+                            padding-right:16px;
                           "
-                        />
-                      </td>
-                    `
-                    : ""
-                }
+                        >
+                          <img
+                            src="${escapeHtml(
+                              productImageSrc,
+                            )}"
+                            alt="${escapeHtml(
+                              item.productName,
+                            )}"
+                            width="72"
+                            height="72"
+                            style="
+                              display:block;
+                              width:72px;
+                              height:72px;
+                              object-fit:cover;
+                              border-radius:10px;
+                              background:#f2f2f2;
+                            "
+                          />
+                        </td>
+                      `
+                      : `
+                        <td
+                          width="86"
+                          valign="top"
+                          style="
+                            width:86px;
+                            padding-right:16px;
+                          "
+                        >
+                          <div
+                            style="
+                              width:72px;
+                              height:72px;
+                              border-radius:10px;
+                              background:#f2f2f2;
+                            "
+                          ></div>
+                        </td>
+                      `
+                  }
 
-                <td
-                  valign="top"
-                  style="
-                    padding-right:12px;
-                  "
-                >
-                  <div
+                  <td
+                    valign="top"
                     style="
+                      padding-right:12px;
+                    "
+                  >
+                    <div
+                      style="
+                        font-size:15px;
+                        line-height:1.4;
+                        font-weight:700;
+                        color:#000000;
+                      "
+                    >
+                      ${escapeHtml(
+                        item.productName,
+                      )}
+                    </div>
+
+                    ${
+                      item.colorName ||
+                      item.size
+                        ? `
+                          <div
+                            style="
+                              margin-top:6px;
+                              color:#666666;
+                              font-size:13px;
+                              line-height:1.5;
+                            "
+                          >
+                            ${
+                              item.colorName
+                                ? `Color: ${escapeHtml(
+                                    item.colorName,
+                                  )}`
+                                : ""
+                            }
+
+                            ${
+                              item.colorName &&
+                              item.size
+                                ? " &nbsp;&bull;&nbsp; "
+                                : ""
+                            }
+
+                            ${
+                              item.size
+                                ? `Size: ${escapeHtml(
+                                    item.size,
+                                  )}`
+                                : ""
+                            }
+                          </div>
+                        `
+                        : ""
+                    }
+
+                    <div
+                      style="
+                        margin-top:5px;
+                        color:#777777;
+                        font-size:13px;
+                        line-height:1.5;
+                      "
+                    >
+                      Qty: ${item.quantity}
+
+                      &nbsp;&bull;&nbsp;
+
+                      $${item.unitPrice.toFixed(
+                        2,
+                      )} each
+                    </div>
+                  </td>
+
+                  <td
+                    valign="top"
+                    align="right"
+                    style="
+                      padding-left:10px;
                       font-size:15px;
-                      line-height:1.4;
                       font-weight:700;
+                      white-space:nowrap;
                       color:#000000;
                     "
                   >
-                    ${escapeHtml(
-                      item.productName,
-                    )}
-                  </div>
-
-                  ${
-                    item.colorName ||
-                    item.size
-                      ? `
-                        <div
-                          style="
-                            margin-top:6px;
-                            color:#666666;
-                            font-size:13px;
-                            line-height:1.5;
-                          "
-                        >
-                          ${
-                            item.colorName
-                              ? `Color: ${escapeHtml(
-                                  item.colorName,
-                                )}`
-                              : ""
-                          }
-
-                          ${
-                            item.colorName &&
-                            item.size
-                              ? " &nbsp;&bull;&nbsp; "
-                              : ""
-                          }
-
-                          ${
-                            item.size
-                              ? `Size: ${escapeHtml(
-                                  item.size,
-                                )}`
-                              : ""
-                          }
-                        </div>
-                      `
-                      : ""
-                  }
-
-                  <div
-                    style="
-                      margin-top:5px;
-                      color:#777777;
-                      font-size:13px;
-                      line-height:1.5;
-                    "
-                  >
-                    Qty: ${item.quantity}
-
-                    &nbsp;&bull;&nbsp;
-
-                    $${item.unitPrice.toFixed(
+                    $${item.subtotal.toFixed(
                       2,
-                    )} each
-                  </div>
-                </td>
+                    )}
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        `;
+      })
+      .join("");
 
-                <td
-                  valign="top"
-                  align="right"
-                  style="
-                    padding-left:10px;
-                    font-size:15px;
-                    font-weight:700;
-                    white-space:nowrap;
-                    color:#000000;
-                  "
-                >
-                  $${item.subtotal.toFixed(
-                    2,
-                  )}
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-      `,
-    )
-    .join("");
+  /* =========================================================
+     DEBUG
+  ========================================================= */
 
-  /* ---------------------------------------------------------
+  console.log(
+    "ORDER_CONFIRMATION_ITEMS:",
+    data.items.map((item) => ({
+      productName:
+        item.productName,
+
+      productImage:
+        item.productImage,
+    })),
+  );
+
+  /* =========================================================
      SEND EMAIL
-  --------------------------------------------------------- */
+  ========================================================= */
 
   const result =
     await transporter.sendMail({
@@ -277,6 +395,8 @@ export async function sendOrderConfirmationEmail(
 
       subject:
         `SHOP.CO Order Confirmation - ${data.orderNumber}`,
+
+      attachments,
 
       html: `
         <!doctype html>
@@ -314,13 +434,12 @@ export async function sendOrderConfirmationEmail(
               >
                 <div
                   style="
-                    background:#ffffff;
+                    overflow:hidden;
                     border:1px solid #e8e8e8;
                     border-radius:16px;
-                    overflow:hidden;
+                    background:#ffffff;
                   "
                 >
-
                   <!-- HEADER -->
 
                   <div
@@ -344,8 +463,8 @@ export async function sendOrderConfirmationEmail(
                     <div
                       style="
                         margin-top:10px;
-                        font-size:15px;
                         color:#e5e5e5;
+                        font-size:15px;
                       "
                     >
                       Order Confirmation
@@ -359,7 +478,6 @@ export async function sendOrderConfirmationEmail(
                       padding:30px 28px;
                     "
                   >
-
                     <h1
                       style="
                         margin:0;
@@ -393,71 +511,57 @@ export async function sendOrderConfirmationEmail(
                       style="
                         margin-top:24px;
                         padding:18px;
-                        background:#f7f7f7;
                         border-radius:10px;
+                        background:#f7f7f7;
                       "
                     >
-                      <table
-                        width="100%"
-                        cellspacing="0"
-                        cellpadding="0"
-                        border="0"
+                      <div
+                        style="
+                          color:#666666;
+                          font-size:12px;
+                          font-weight:600;
+                        "
                       >
-                        <tr>
-                          <td
-                            style="
-                              color:#666666;
-                              font-size:13px;
-                              padding-bottom:5px;
-                            "
-                          >
-                            ORDER NUMBER
-                          </td>
-                        </tr>
+                        ORDER NUMBER
+                      </div>
 
-                        <tr>
-                          <td
-                            style="
-                              font-size:16px;
-                              font-weight:700;
-                              color:#000000;
-                            "
-                          >
-                            ${escapeHtml(
-                              data.orderNumber,
-                            )}
-                          </td>
-                        </tr>
+                      <div
+                        style="
+                          margin-top:6px;
+                          font-size:16px;
+                          font-weight:700;
+                        "
+                      >
+                        ${escapeHtml(
+                          data.orderNumber,
+                        )}
+                      </div>
 
-                        <tr>
-                          <td
-                            style="
-                              padding-top:14px;
-                              color:#666666;
-                              font-size:13px;
-                            "
-                          >
-                            PAYMENT METHOD
-                          </td>
-                        </tr>
+                      <div
+                        style="
+                          margin-top:16px;
+                          color:#666666;
+                          font-size:12px;
+                          font-weight:600;
+                        "
+                      >
+                        PAYMENT METHOD
+                      </div>
 
-                        <tr>
-                          <td
-                            style="
-                              padding-top:5px;
-                              font-size:15px;
-                              font-weight:600;
-                            "
-                          >
-                            ${formatPaymentMethod(
-                              data.paymentMethod,
-                            )}
-                          </td>
-                        </tr>
-                      </table>
+                      <div
+                        style="
+                          margin-top:6px;
+                          font-size:15px;
+                          font-weight:600;
+                        "
+                      >
+                        ${formatPaymentMethod(
+                          data.paymentMethod,
+                        )}
+                      </div>
                     </div>
 
-                    <!-- ITEMS -->
+                    <!-- PRODUCTS -->
 
                     <h2
                       style="
@@ -486,7 +590,6 @@ export async function sendOrderConfirmationEmail(
                     <div
                       style="
                         margin-top:22px;
-                        padding-top:4px;
                       "
                     >
                       ${moneyRow(
@@ -495,8 +598,7 @@ export async function sendOrderConfirmationEmail(
                       )}
 
                       ${
-                        data.couponDiscount >
-                        0
+                        data.couponDiscount > 0
                           ? moneyRow(
                               "Coupon Discount",
                               -data.couponDiscount,
@@ -514,46 +616,45 @@ export async function sendOrderConfirmationEmail(
                         data.taxAmount,
                       )}
 
-                      <div
+                      <table
+                        width="100%"
+                        cellspacing="0"
+                        cellpadding="0"
+                        border="0"
                         style="
                           margin-top:14px;
                           padding-top:16px;
                           border-top:1px solid #dddddd;
                         "
                       >
-                        <table
-                          width="100%"
-                          cellspacing="0"
-                          cellpadding="0"
-                          border="0"
-                        >
-                          <tr>
-                            <td
-                              style="
-                                font-size:19px;
-                                font-weight:700;
-                              "
-                            >
-                              Total
-                            </td>
+                        <tr>
+                          <td
+                            style="
+                              padding-top:16px;
+                              font-size:19px;
+                              font-weight:700;
+                            "
+                          >
+                            Total
+                          </td>
 
-                            <td
-                              align="right"
-                              style="
-                                font-size:19px;
-                                font-weight:700;
-                              "
-                            >
-                              $${data.total.toFixed(
-                                2,
-                              )}
-                            </td>
-                          </tr>
-                        </table>
-                      </div>
+                          <td
+                            align="right"
+                            style="
+                              padding-top:16px;
+                              font-size:19px;
+                              font-weight:700;
+                            "
+                          >
+                            $${data.total.toFixed(
+                              2,
+                            )}
+                          </td>
+                        </tr>
+                      </table>
                     </div>
 
-                    <!-- SHIPPING ADDRESS -->
+                    <!-- SHIPPING -->
 
                     <div
                       style="
@@ -602,10 +703,8 @@ export async function sendOrderConfirmationEmail(
                             .addressLine2
                             ? `
                               <br />
-
                               ${escapeHtml(
-                                data
-                                  .shippingAddress
+                                data.shippingAddress
                                   .addressLine2,
                               )}
                             `
@@ -615,16 +714,13 @@ export async function sendOrderConfirmationEmail(
                         <br />
 
                         ${escapeHtml(
-                          data.shippingAddress
-                            .city,
+                          data.shippingAddress.city,
                         )}
 
                         ${
-                          data.shippingAddress
-                            .state
+                          data.shippingAddress.state
                             ? `, ${escapeHtml(
-                                data
-                                  .shippingAddress
+                                data.shippingAddress
                                   .state,
                               )}`
                             : ""
@@ -640,26 +736,21 @@ export async function sendOrderConfirmationEmail(
                         <br />
 
                         ${escapeHtml(
-                          data.shippingAddress
-                            .country,
+                          data.shippingAddress.country,
                         )}
 
                         <br />
 
                         ${escapeHtml(
-                          data.shippingAddress
-                            .phone,
+                          data.shippingAddress.phone,
                         )}
 
                         ${
-                          data.shippingAddress
-                            .email
+                          data.shippingAddress.email
                             ? `
                               <br />
-
                               ${escapeHtml(
-                                data
-                                  .shippingAddress
+                                data.shippingAddress
                                   .email,
                               )}
                             `
@@ -667,8 +758,6 @@ export async function sendOrderConfirmationEmail(
                         }
                       </div>
                     </div>
-
-                    <!-- FOOTER MESSAGE -->
 
                     <p
                       style="
@@ -679,7 +768,7 @@ export async function sendOrderConfirmationEmail(
                       "
                     >
                       We'll send you another email
-                      when the status of your order
+                      whenever your order status
                       changes.
                     </p>
 
@@ -688,11 +777,9 @@ export async function sendOrderConfirmationEmail(
                         margin:10px 0 0;
                         color:#777777;
                         font-size:14px;
-                        line-height:1.7;
                       "
                     >
-                      Thank you for shopping with
-                      SHOP.CO.
+                      Thank you for shopping with SHOP.CO.
                     </p>
                   </div>
                 </div>
@@ -724,6 +811,9 @@ export async function sendOrderConfirmationEmail(
 
       emailId:
         result.messageId,
+
+      attachments:
+        attachments.length,
     },
   );
 

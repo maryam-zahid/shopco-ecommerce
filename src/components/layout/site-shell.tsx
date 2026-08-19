@@ -1,3 +1,4 @@
+
 "use client";
 
 import { SessionProvider } from "next-auth/react";
@@ -24,10 +25,27 @@ export default function SiteShell({
     pathname === "/login" ||
     pathname === "/register";
 
-  if (isAdminRoute) {
+  const isInvoiceRoute =
+    pathname.startsWith(
+      "/invoice/orders/",
+    );
+
+  /*
+   * Admin pages use their own admin layout.
+   * Invoice pages must render ONLY the invoice.
+   */
+  if (
+    isAdminRoute ||
+    isInvoiceRoute
+  ) {
     return <>{children}</>;
   }
 
+  /*
+   * Normal storefront routes.
+   * Header needs SessionProvider because
+   * AccountMenu uses useSession().
+   */
   return (
     <SessionProvider>
       <Header />
